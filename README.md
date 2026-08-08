@@ -51,6 +51,40 @@ Keď treba opraviť číslo alebo vetu, mení sa súbor v `data/`. Keď treba zm
 mení sa `render/` alebo CSS. Vďaka tomu sa dá text upravovať bez rizika, že sa rozbije
 vykresľovanie.
 
+## Zamknutá sekcia (jedálniček)
+
+Sekcia 18 je v repozitári uložená **zašifrovaná**. Nie je to skrytý `div` — bez kódu
+je v súbore len nečitateľný blok znakov, ktorý sa nedá obísť pozretím zdroja stránky.
+
+```
+strava.source.json              čitateľný zdroj — v .gitignore, NIKDY sa necommituje
+assets/js/data/strava.enc.js    zašifrovaný výstup — verejný, to je v poriadku
+tools/encrypt.mjs               prevod jedného na druhé
+assets/js/render/locked.js      odšifrovanie v prehliadači cez WebCrypto
+```
+
+**Zmena obsahu alebo kódu:**
+
+```bash
+# uprav strava.source.json, potom:
+node tools/encrypt.mjs strava.source.json assets/js/data/strava.enc.js STRAVA_ENC
+# kód sa pýta interaktívne, aby sa nedostal do histórie shellu
+git add assets/js/data/strava.enc.js && git commit && git push
+```
+
+Po zmene obsahu prestane platiť kód uložený v prehliadači a zámok sa vráti — to je
+správne správanie, nie chyba.
+
+Šifrovanie: PBKDF2-SHA-256, 600 000 iterácií, náhodná soľ → AES-256-GCM.
+
+**Čo to nechráni:** kód sa nedá odvolať (kto ho dostane, obsah si môže uložiť navždy);
+zašifrovaný súbor je verejný, takže kód sa dá skúšať mimo stránky bez limitu pokusov —
+preto musí byť dlhý. Nie je to prihlásenie. Ak treba prístup odoberať, GitHub Pages
+na to nestačí.
+
+> **Zálohuj si `strava.source.json` mimo repozitára.** Je v `.gitignore`, takže pri
+> novom klone tam nebude a bez neho sa obsah nedá upraviť — len prečítať cez stránku.
+
 ## Lokálny beh
 
 ES moduly nefungujú cez `file://` — treba jednoduchý server:

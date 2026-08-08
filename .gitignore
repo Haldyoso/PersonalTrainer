@@ -1,0 +1,11 @@
+# Čitateľný zdroj zamknutých sekcií. NIKDY sa necommituje —
+# do repozitára ide len zašifrovaný výstup assets/js/data/*.enc.js
+strava.source.json
+*.source.json
+
+# Kód na šifrovanie, ak si ho niekedy odložíš do súboru
+.passphrase
+.env
+
+node_modules/
+_site/

@@ -13,6 +13,7 @@ import { dayCards, techniqueSections, longevityDashboard, mesocycle, cheatSheets
 import { quickstart } from './render/quickstart.js';
 import { exerciseIndex } from './render/exercise-index.js';
 import { deskEffects, deskProtocol, glossary, confidence } from './render/reference.js';
+import { nutrition } from './render/nutrition.js';
 import { initNav, initReveal, initPrint, initExpander } from './render/nav.js';
 import { initSearch } from './render/search.js';
 import { initTerms } from './render/terms.js';
@@ -39,6 +40,7 @@ function renderAll() {
   exerciseIndex();
   deskEffects();
   deskProtocol();
+  nutrition();
   glossary();
   confidence();
 }
