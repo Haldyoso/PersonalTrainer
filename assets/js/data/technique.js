@@ -10,7 +10,7 @@
  */
 export const TECHNIQUE = [
   {
-    day: 'Deň 1 — Prsia + triceps + zadný deltoid',
+    day: 'Utorok — Prsia + triceps + zadný deltoid',
     items: [
       {
         name: 'DB incline bench press',
@@ -75,7 +75,7 @@ export const TECHNIQUE = [
     ]
   },
   {
-    day: 'Deň 2 — Chrbát + biceps + úchop',
+    day: 'Štvrtok — Chrbát + biceps + úchop',
     items: [
       {
         name: 'Barbell bent-over row',
@@ -150,7 +150,7 @@ export const TECHNIQUE = [
     ]
   },
   {
-    day: 'Deň 3 — Ramená + hamstringy + core',
+    day: 'Piatok — Ramená + hamstringy + core',
     items: [
       {
         name: 'DB seated shoulder press',
@@ -225,7 +225,7 @@ export const TECHNIQUE = [
     ]
   },
   {
-    day: 'Deň 4 — Nohy + lýtka',
+    day: 'Pondelok — Nohy + lýtka',
     items: [
       {
         name: 'Hack squat',

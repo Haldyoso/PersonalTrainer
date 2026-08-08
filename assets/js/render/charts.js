@@ -34,9 +34,10 @@ export function volumeChart(el, showAfter) {
     s += `<rect x="${(padL + r.min * u).toFixed(1)}" y="${y + 1}" width="${((r.max - r.min) * u).toFixed(1)}" height="${rowH - 4}" fill="${C.band}" opacity=".75"/>`;
     s += `<text x="${padL - 6}" y="${y + rowH / 2 + 1}" font-size="8.5" fill="${C.ink}" text-anchor="end" font-weight="600">${esc(r.group)}</text>`;
 
+    // pôvodný plán má jeden stĺpec, porovnanie po zmene dva nad sebou
     const bars = showAfter
       ? [[r.total4, C.old, y + 1, 7], [r.after, C.p25, y + 10, 7]]
-      : [[r.total4, C.p20, y + 2, 8], [r.total4 * 0.75, '#9db4cf', y + 11, 5]];
+      : [[r.total4, C.p20, y + 4, 10]];
 
     bars.forEach(([value, color, barY, barH]) => {
       const n = Math.round(value * 2) / 2;

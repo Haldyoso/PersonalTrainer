@@ -21,7 +21,7 @@
   <div class="wrap">
     <span class="eyebrow">Audit tréningového plánu · august 2026</span>
     <h1>Dobrý plán<br>s troma dierami</h1>
-    <p class="subtitle">Muž · 180 cm · ~85 kg · 3 roky tréningu · 3–4× týždenne · 45–60 min · sedavá práca</p>
+    <p class="subtitle">Muž · 180 cm · ~85 kg · 3 roky tréningu · 4× týždenne · 45–60 min · sedavá práca</p>
     <div class="statstrip">
       <div><b>12,3</b><span>sérií / biceps</span></div>
       <div><b>3,5</b><span>sérií / hamstringy</span></div>
@@ -73,9 +73,9 @@
 
   <p class="lead">Zvyšok dokumentu vysvetľuje, prečo to tak je. Táto sekcia hovorí, čo robiť.</p>
 
-  <h3 style="margin-bottom:10px">Štyri tréningové dni</h3>
+  <h3 style="margin-bottom:10px">Štyri tréningy týždenne, pevné dni</h3>
   <div class="qtiles" id="qs-days"></div>
-  <p class="small" style="margin-bottom:22px">Rotuj ich za sebou — 1, 2, 3, 4, 1, 2… <strong>bez ohľadu na deň v týždni.</strong> Keď stihneš tri tréningy, prejdi na trojdňovú verziu; je pri rozpise.</p>
+  <p class="small" style="margin-bottom:22px"><strong>Nohy hneď v pondelok</strong> — najväčší deficit dostane najviac energie. Hamstringy majú druhý dotyk v piatok, štyri dni po nohách. Streda, sobota a nedeľa sú voľné. Ak ti tie dni nesedia, drž <em>poradie a rozostupy</em>, nie konkrétne názvy dní.</p>
 
   <h3 style="margin-bottom:4px">Päť pravidiel</h3>
   <div class="card" id="qs-rules" style="padding-top:4px"></div>
@@ -118,15 +118,14 @@
   <div class="sechead"><span class="eyebrow">02 · Objem a rozloženie</span><h2>Koľko sérií kam reálne padá</h2></div>
 
   <p class="lead">Koľko sérií týždenne reálne dostane ktorá partia — a či je to málo, akurát alebo veľa.</p>
-  <p class="small" style="margin-bottom:16px">Ako to počítam: cvik, kde je partia hlavným cieľom, sa ráta celý; kde len pomáha, polovicou. Za priemer beriem 3,5 série na cvik (tvoje „3–4“). Pri 3 tréningoch a 4-dňovej rotácii vyjde každý deň priemerne 0,75× za týždeň — preto je stĺpec „3×“ nižší.</p>
+  <p class="small" style="margin-bottom:16px">Ako to počítam: cvik, kde je partia hlavným cieľom, sa ráta celý; kde len pomáha, polovicou. Za priemer beriem 3,5 série na cvik (tvoje „3–4“). Čísla platia na týždeň so štyrmi tréningmi, teda tak, ako plán beží teraz.</p>
 
   <div class="card">
     <figure>
-      <div class="acclabel" style="margin-bottom:10px">Graf 1 — série na partiu za týždeň pri 4 tréningoch, s odporúčaným pásmom</div>
+      <div class="acclabel" style="margin-bottom:10px">Graf 1 — série na partiu za týždeň, s odporúčaným pásmom</div>
       <div id="chart-volume"></div>
       <div class="legend">
-        <span><i style="background:var(--p20)"></i>4× týždenne</span>
-        <span><i style="background:#9db4cf"></i>3× týždenne</span>
+        <span><i style="background:var(--p20)"></i>súčasný plán</span>
         <span><i style="background:#cfe3d5"></i>odporúčané pásmo</span>
       </div>
       <figcaption>Každý blok = jedna séria. Zelené pásmo v pozadí je odporúčaný rozsah pre hypertrofiu. Modrý stĺpec vľavo od pásma = máš málo, vpravo = máš veľa.</figcaption>
@@ -134,11 +133,11 @@
   </div>
 
   <details class="acc">
-    <summary>Tabuľka: série na partiu za týždeň <span class="acclabel">3× vs 4×</span></summary>
+    <summary>Tabuľka: série na partiu za týždeň <span class="acclabel">16 partií</span></summary>
     <div class="accbody">
       <div class="tscroll">
         <table>
-          <thead><tr><th>Partia</th><th class="n">Priame</th><th class="n">Nepriame ×0,5</th><th class="n">Spolu 4×/týž.</th><th class="n">Spolu 3×/týž.</th><th class="n">Odporúčané</th><th>Stav (4×)</th></tr></thead>
+          <thead><tr><th>Partia</th><th class="n">Priame</th><th class="n">Nepriame ×0,5</th><th class="n">Spolu / týž.</th><th class="n">Odporúčané</th><th>Stav</th></tr></thead>
           <tbody id="voltable"></tbody>
         </table>
       </div>
@@ -152,7 +151,7 @@
     <div class="accbody">
       <div class="tscroll">
         <table>
-          <thead><tr><th>Partia</th><th class="n">Teraz (4×/týž.)</th><th class="n">Optimum</th><th>Komentár</th></tr></thead>
+          <thead><tr><th>Partia</th><th class="n">Teraz</th><th class="n">Optimum</th><th>Komentár</th></tr></thead>
           <tbody id="freqtable"></tbody>
         </table>
       </div>
@@ -306,7 +305,7 @@
 
   <div class="grid2">
     <div class="note warn"><b>Horná vs dolná časť tela</b>
-    Teraz <strong>75 : 25</strong>. Pri 4-dňovej rotácii s jedným dňom nôh to inak nejde. Riešenie nie je pridať piaty deň, ale dať druhý dotyk nôh do dňa ramien, ktorý je aj tak poloprázdny. Po zmene <strong>66 : 34</strong>, čo je pri tomto splite realistické maximum.</div>
+    Teraz <strong>75 : 25</strong>. Pri štyroch tréningoch s jedným dňom nôh to inak nejde. Riešenie nie je pridať piaty deň, ale dať druhý dotyk nôh do dňa ramien, ktorý je aj tak poloprázdny. Po zmene <strong>66 : 34</strong>, čo je pri tomto splite realistické maximum.</div>
     <div class="note warn"><b>Kvadriceps vs hamstringy</b>
     Teraz <strong>2 : 1</strong> v prospech kvadricepsu. Pomer sily hamstringov ku kvadricepsu (H:Q) pod ~0,6 sa spája s vyšším rizikom poranenia kolena a zadného stehna — a ty ideš na hokej, kde je práve toto typické zranenie. Po zmene <strong>≈ 1 : 1,2</strong>, čo je počas dobiehania deficitu správne; o 2–3 mesiace pridaj sériu na kvadriceps.</div>
   </div>
@@ -513,7 +512,7 @@
 <section id="plan">
   <div class="sechead"><span class="eyebrow">08 · Optimalizovaný plán</span><h2>Štyri dni, rovnaký čas, žiadne diery</h2></div>
 
-  <p class="lead">Kostra ostáva tvoja — rotuješ štyri dni. Zmenila sa jedna vec zásadne: <strong>deň ramien už nie je poloprázdny.</strong> Doplnil som doň druhý dotyk hamstringov, zadný deltoid a core, čím sa opravili tri najväčšie diery bez pridania piateho tréningu.</p>
+  <p class="lead">Štyri tréningy týždenne na pevných dňoch, takže <strong>každá partia dostane svoj podnet každý týždeň</strong> — vrátane nôh. Druhá zásadná zmena: piatkový deň ramien už nie je poloprázdny. Doplnil som doň druhý dotyk hamstringov, zadný deltoid a core, čím sa opravili tri najväčšie diery bez pridania piateho tréningu.</p>
 
   <div class="note"><b>Ako čítať stĺpec RIR</b>
   RIR = reps in reserve, koľko opakovaní by si ešte zvládol, keby si musel. RIR 2 = mohol si spraviť ešte dve. RIR 0 = zlyhanie. Na ťažké viackĺbové cviky choď RIR 1–2, na izolácie RIR 0–1 — tam je zlyhanie lacné a bezpečné. Nikdy nie zlyhanie na barbell row alebo drepe.</div>
@@ -521,9 +520,9 @@
   <div id="daycards"></div>
 
   <details class="acc">
-    <summary>Skrátená verzia, keď stihneš len 3 tréningy <span class="acclabel">Push / Pull / Nohy</span></summary>
+    <summary>Skrátená verzia, keď v týždni vyjdú len 3 tréningy <span class="acclabel">Nohy / Tlak / Ťah</span></summary>
     <div class="accbody">
-      <p class="small" style="margin-bottom:14px">Nerotuj 4-dňový split pri 3 tréningoch — každý deň by ti vyšiel priemerne 0,75× týždenne a nohy by si trénoval reálne raz za deväť dní. Prejdi na tri dni a rotuj ich <strong>bez ohľadu na deň v týždni</strong>: A → B → C → A → …</p>
+      <p class="small" style="margin-bottom:14px">Neškrtaj jeden deň zo štvordňového týždňa — vypadli by celé partie. Prejdi na tento trojdňový týždeň: <strong>pondelok, streda, piatok</strong>. Nohy v ňom ostávajú hneď v pondelok a leg curl má štyri série, keďže druhý dotyk v tomto týždni nebude.</p>
       <div id="daycards3"></div>
     </div>
   </details>
@@ -701,10 +700,10 @@
         <table class="narrow">
           <thead><tr><th>Deň</th><th class="n">Sérií</th><th class="n">Rozcvička</th><th class="n">Práca</th><th class="n">Spolu</th><th class="n">+ pás</th></tr></thead>
           <tbody>
-            <tr><td>1 — Prsia + triceps + zadný deltoid</td><td class="n">19</td><td class="n">6 min</td><td class="n">44 min</td><td class="n">50 min</td><td class="n">+20 min</td></tr>
-            <tr><td>2 — Chrbát + biceps + úchop</td><td class="n">19 + carry</td><td class="n">6 min</td><td class="n">44 min</td><td class="n">50 min</td><td class="n">+20 min</td></tr>
-            <tr><td>3 — Ramená + hamstringy + core</td><td class="n">22</td><td class="n">5 min</td><td class="n">43 min</td><td class="n">48 min</td><td class="n">+12 min VO₂max</td></tr>
-            <tr><td>4 — Nohy + lýtka</td><td class="n">19</td><td class="n">7 min</td><td class="n">48 min</td><td class="n">55 min</td><td class="n">+10 min</td></tr>
+            <tr><td><strong>Pondelok</strong> — Nohy + lýtka</td><td class="n">19</td><td class="n">7 min</td><td class="n">48 min</td><td class="n">55 min</td><td class="n">+10 min</td></tr>
+            <tr><td><strong>Utorok</strong> — Prsia + triceps + zadný deltoid</td><td class="n">19</td><td class="n">6 min</td><td class="n">44 min</td><td class="n">50 min</td><td class="n">+20 min</td></tr>
+            <tr><td><strong>Štvrtok</strong> — Chrbát + biceps + úchop</td><td class="n">19 + carry</td><td class="n">6 min</td><td class="n">44 min</td><td class="n">50 min</td><td class="n">+20 min</td></tr>
+            <tr><td><strong>Piatok</strong> — Ramená + hamstringy + core</td><td class="n">22</td><td class="n">5 min</td><td class="n">43 min</td><td class="n">48 min</td><td class="n">+12 min VO₂max</td></tr>
           </tbody>
         </table>
       </div>
@@ -788,10 +787,10 @@
         <table>
           <thead><tr><th>Deň</th><th>Verdikt</th><th>Poznámka</th></tr></thead>
           <tbody>
-            <tr><td><strong>1 — Prsia + triceps</strong></td><td><span class="tag t-ok">v poriadku</span></td><td>Incline press prvý je správne. Jediná zmena je obsahová: crossover von, horizontálny tlak dnu, a zadný deltoid na koniec ako protiváha.</td></tr>
-            <tr><td><strong>2 — Chrbát + biceps</strong></td><td><span class="tag t-ok">v poriadku</span></td><td>Barbell row prvý je správne — je to najťažší cvik a potrebuje čerstvý driek. Biceps až po chrbte, aby ti neunavené predlaktia neobmedzovali ťahy.</td></tr>
-            <tr><td><strong>3 — Ramená</strong></td><td><span class="tag t-part">upraviť</span></td><td>Tlak pred rozpažením je správne. Problém nie je poradie, ale to, že deň má len 2 cviky.</td></tr>
-            <tr><td><strong>4 — Nohy</strong></td><td><span class="tag t-no">prehodiť</span></td><td><strong>Tu je reálna chyba.</strong> Robíš <em>leg extension pred leg pressom</em> — izoláciu pred viackĺbovým cvikom. Kvadriceps ide do leg pressu predunavený, takže na hlavnom cviku zdvihneš menej a stimul je nižší. Zároveň RDL prvý unaví vzpriamovače pred zvyškom nôh.<br><br><strong>Správne poradie:</strong> drepový vzor (hack squat) → RDL → leg curl → split squat → leg extension → lýtka. Najťažší viackĺbový prvý, izolácia posledná.</td></tr>
+            <tr><td><strong>Pondelok — Nohy</strong></td><td><span class="tag t-no">prehodiť</span></td><td><strong>Tu je reálna chyba.</strong> Robíš <em>leg extension pred leg pressom</em> — izoláciu pred viackĺbovým cvikom. Kvadriceps ide do leg pressu predunavený, takže na hlavnom cviku zdvihneš menej a stimul je nižší. Zároveň RDL prvý unaví vzpriamovače pred zvyškom nôh.<br><br><strong>Správne poradie:</strong> drepový vzor (hack squat) → RDL → leg curl → split squat → leg extension → lýtka. Najťažší viackĺbový prvý, izolácia posledná.</td></tr>
+            <tr><td><strong>Utorok — Prsia + triceps</strong></td><td><span class="tag t-ok">v poriadku</span></td><td>Incline press prvý je správne. Jediná zmena je obsahová: crossover von, horizontálny tlak dnu, a zadný deltoid na koniec ako protiváha.</td></tr>
+            <tr><td><strong>Štvrtok — Chrbát + biceps</strong></td><td><span class="tag t-ok">v poriadku</span></td><td>Barbell row prvý je správne — je to najťažší cvik a potrebuje čerstvý driek. Biceps až po chrbte, aby ti neunavené predlaktia neobmedzovali ťahy. Driek má po pondelkovom RDL tri dni na zotavenie.</td></tr>
+            <tr><td><strong>Piatok — Ramená</strong></td><td><span class="tag t-part">upraviť</span></td><td>Tlak pred rozpažením je správne. Problém nie je poradie, ale to, že deň mal len 2 cviky. Teraz je v ňom aj druhý dotyk hamstringov a core.</td></tr>
           </tbody>
         </table>
       </div>
@@ -858,17 +857,17 @@
         <table>
           <thead><tr><th>Deň</th><th>Silový tréning</th><th>Kardio hneď po</th><th class="n">Čas</th></tr></thead>
           <tbody>
-            <tr><td><strong>1 — Prsia</strong></td><td>50 min</td><td>Pás <strong>5 km/h, sklon 12 %, 20 min</strong> — zóna 2</td><td class="n">70 min</td></tr>
-            <tr><td><strong>2 — Chrbát</strong></td><td>50 min</td><td>Pás <strong>5 km/h, sklon 12 %, 20 min</strong> — zóna 2</td><td class="n">70 min</td></tr>
-            <tr><td><strong>3 — Ramená</strong></td><td>46 min</td><td><strong>VO₂max blok, 12 min:</strong> bicykel, 10 × (30 s tvrdo / 30 s ľahko) + 2 min výklus</td><td class="n">58 min</td></tr>
-            <tr><td><strong>4 — Nohy</strong></td><td>55 min</td><td>Pás <strong>4 km/h, sklon 5 %, 10 min</strong> — len prekrvenie</td><td class="n">65 min</td></tr>
+            <tr><td><strong>Pondelok — Nohy</strong></td><td>55 min</td><td>Pás <strong>4 km/h, sklon 5 %, 10 min</strong> — len prekrvenie</td><td class="n">65 min</td></tr>
+            <tr><td><strong>Utorok — Prsia</strong></td><td>50 min</td><td>Pás <strong>5 km/h, sklon 12 %, 20 min</strong> — zóna 2</td><td class="n">70 min</td></tr>
+            <tr><td><strong>Štvrtok — Chrbát</strong></td><td>50 min</td><td>Pás <strong>5 km/h, sklon 12 %, 20 min</strong> — zóna 2</td><td class="n">70 min</td></tr>
+            <tr><td><strong>Piatok — Ramená</strong></td><td>46 min</td><td><strong>VO₂max blok, 12 min:</strong> bicykel, 10 × (30 s tvrdo / 30 s ľahko) + 2 min výklus</td><td class="n">58 min</td></tr>
           </tbody>
         </table>
       </div>
       <p style="margin-top:12px"><strong>Spolu:</strong> ~50 min riadenej zóny 2 + 12 min práce na VO₂max týždenne. Zvyšok do 150 minút doplň chôdzou mimo posilky — cieľ <strong>8–10 tisíc krokov denne</strong>. Toto nie je vata: bežná denná chôdza je z hľadiska mortality skoro rovnako hodnotná ako plánované kardio a nestojí ťa ani minútu tréningového času.</p>
 
       <div class="grid2">
-        <div class="note good"><b>Prečo VO₂max blok práve v deň ramien</b>Je to najkratší tréning a najďalej od dňa nôh. Intervalový blok po tréningu ramien nezasiahne nič, čo budeš potrebovať zajtra. Nikdy ho nedávaj bezprostredne pred alebo po dni nôh.</div>
+        <div class="note good"><b>Prečo VO₂max blok práve v piatok</b>Deň ramien je najkratší tréning a v týždni najďalej od pondelkových nôh. Intervalový blok po tréningu ramien nezasiahne nič, čo budeš potrebovať zajtra. Nikdy ho nedávaj bezprostredne pred alebo po dni nôh.</div>
         <div class="note warn"><b>Zabrzdí ma kardio v naberaní?</b>Interferenčný efekt je reálny, ale hlavne pri veľkých objemoch behu a pri kardiu na tie isté svaly krátko pred silovým tréningom. Bicykel a chôdza so sklonom <em>po</em> tréningu, v tomto objeme, ti rast nezastavia. Čo ti ho zastaví, je nedojedanie kalórií, ktoré kardio spálilo — to zarátaj.</div>
       </div>
       <p class="small">Ak by si niekedy predsa mal 40 minút navyše mimo posilky, najlepšie ich investuješ do jednej dlhšej zóny 2 v netréningový deň — vonku, na bicykli alebo svižnou chôdzou. Zóna 2 = dýchaš zrýchlene, ale vieš rozprávať v celých vetách.</p>

@@ -21,7 +21,6 @@ export function volumeTable() {
       <td class="n">${fx(r.direct)}</td>
       <td class="n">${fx(r.indirect)}</td>
       <td class="n"><strong>${fx(r.total4)}</strong></td>
-      <td class="n">${fx(r.total4 * 0.75)}</td>
       <td class="n">${r.min}–${r.max}</td>
       <td><span class="tag ${cls}">${label}</span></td>
     </tr>`;

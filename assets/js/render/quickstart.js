@@ -9,10 +9,10 @@ import { esc, mount } from '../util.js';
 import { DAYS_4 } from '../data/days.js';
 import { RULES, HOLES, NEXT } from '../data/quickstart.js';
 
-/** Štyri dlaždice tréningových dní — názov, počet cvikov, čas. */
+/** Štyri dlaždice tréningových dní — deň v týždni, náplň, počet cvikov, čas. */
 export function dayTiles() {
-  mount('#qs-days', DAYS_4.map((d, i) => `<a class="qtile" href="#plan">
-    <span class="qnum">${i + 1}</span>
+  mount('#qs-days', DAYS_4.map((d) => `<a class="qtile" href="#plan">
+    <span class="qday">${esc(d.id)}</span>
     <b>${esc(d.title)}</b>
     <span class="qmeta">${d.rows.length} cvikov · ${esc(d.mins)}</span>
   </a>`).join(''));

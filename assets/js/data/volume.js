@@ -1,14 +1,14 @@
 /**
  * volume.js — objem po partiách.
  *
- * direct   … priame série za týždeň pri 4 tréningoch
+ * direct   … priame série za týždeň
  * indirect … nepriame série, už prenásobené koeficientom 0,5
- * total4   … direct + indirect (spolu pri 4 tréningoch týždenne)
+ * total4   … direct + indirect
  * min/max  … odporúčané pásmo pre hypertrofiu (série / týždeň)
  * after    … objem po zmenách z optimalizovaného plánu
  *
- * Pri 3 tréningoch týždenne rotuješ 4 dni, takže každý deň vyjde
- * priemerne 0,75× za týždeň — preto sa stĺpec „3×" počíta ako total4 × 0,75.
+ * Všetky čísla platia na týždeň so štyrmi tréningmi na pevných dňoch,
+ * teda každá partia dostane svoj podnet raz za týždeň (hamstringy dvakrát).
  */
 export const VOLUME = [
   { group: 'Prsia',              direct: 10.5, indirect: 0,   total4: 10.5, min: 10, max: 20, after: 10.5 },
@@ -32,7 +32,7 @@ export const VOLUME = [
 /** Koľkokrát za týždeň partia dostane podnet — teraz vs. optimum. */
 export const FREQUENCY = [
   { group: 'Prsia',          now: '1×', opt: '2×',
-    note: 'Pri 10+ sériách na jeden tréning klesá kvalita posledných sérií. Rozdelenie na 2× týždenne dá lepší stimul pri rovnakom objeme — ale pri 4-dňovej rotácii je 1× akceptovateľné, ak držíš intenzitu.' },
+    note: 'Pri 10+ sériách na jeden tréning klesá kvalita posledných sérií. Rozdelenie na 2× týždenne dá lepší stimul pri rovnakom objeme — ale pri štyroch dňoch je 1× akceptovateľné, ak držíš intenzitu.' },
   { group: 'Chrbát',         now: '1×', opt: '2×',
     note: 'To isté. Chrbát znesie vysokú frekvenciu, regeneruje rýchlo.' },
   { group: 'Bočný deltoid',  now: '1×', opt: '2–3×',

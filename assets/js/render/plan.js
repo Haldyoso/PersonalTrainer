@@ -5,7 +5,7 @@
 
 import { esc, mount, plain } from '../util.js';
 import { C } from '../util.js';
-import { DAYS_4, DAYS_3, CHANGE_LABEL } from '../data/days.js';
+import { DAYS_4, DAYS_3, CHANGE_LABEL, weekIndex } from '../data/days.js';
 import { TECHNIQUE } from '../data/technique.js';
 import { LONGEVITY } from '../data/longevity.js';
 import { PHASES, WEEKS, WEEK_PLAN, CHECKPOINTS } from '../data/mesocycle.js';
@@ -39,7 +39,9 @@ export function dayCards(list, target) {
 
 /** Technika po dňoch — akordeón, v ňom pre každý cvik body / chyba / kontrola. */
 export function techniqueSections() {
-  mount('#techsections', TECHNIQUE.map((g) => {
+  // dáta v technique.js sú písané po cvikoch, zobrazujú sa v poradí týždňa
+  const ordered = [...TECHNIQUE].sort((a, b) => weekIndex(a.day) - weekIndex(b.day));
+  mount('#techsections', ordered.map((g) => {
     const items = g.items.map((e) => `<div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line2)">
       <h4 style="margin-bottom:8px;font-size:16px">${esc(e.name)}</h4>
       <p class="acclabel" style="margin-bottom:4px">Kľúčové body</p>

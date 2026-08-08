@@ -12,6 +12,11 @@
 }
 .qtile:hover{border-color:var(--ink);border-left-color:var(--p25)}
 .qtile b{display:block;font-size:15px;line-height:1.25;margin:6px 0 5px}
+.qday{
+  display:inline-block;font-family:var(--fm);font-size:10.5px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--ink);
+  border-radius:2px;padding:3px 7px
+}
 .qtile .qmeta{font-family:var(--fm);font-size:11px;letter-spacing:.05em;color:var(--ink2)}
 .qnum{
   display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
