@@ -78,9 +78,23 @@ správne správanie, nie chyba.
 Šifrovanie: PBKDF2-SHA-256, 600 000 iterácií, náhodná soľ → AES-256-GCM.
 
 **Čo to nechráni:** kód sa nedá odvolať (kto ho dostane, obsah si môže uložiť navždy);
-zašifrovaný súbor je verejný, takže kód sa dá skúšať mimo stránky bez limitu pokusov —
-preto musí byť dlhý. Nie je to prihlásenie. Ak treba prístup odoberať, GitHub Pages
-na to nestačí.
+zašifrovaný súbor je verejný, takže kód sa dá skúšať mimo stránky bez limitu pokusov.
+Nie je to prihlásenie. Ak treba prístup odoberať, GitHub Pages na to nestačí.
+
+**Dĺžka kódu rozhoduje o všetkom ostatnom.** Nástroj odmietne kód kratší než 12 znakov
+a vypíše odhad, za ako dlho sa dá prelomiť na jednej grafickej karte. Prejsť sa dá
+prepínačom `--allow-weak`, ale potom to musí byť vedomé rozhodnutie:
+
+| dĺžka a druh | priestor | odhad |
+|---|---|---|
+| 6 číslic | 10⁶ | ~50 sekúnd |
+| 6 číslic + jedno slovo | ~10¹⁷ | prakticky nikdy |
+| päť náhodných slov | ~10⁴⁴ | prakticky nikdy |
+
+Krátky kód zastaví náhodného návštevníka. Nezastaví nikoho, kto obsah naozaj chce.
+
+> Do tohto súboru ani nikam inam v repozitári **nepíš skutočný kód** — ani ako príklad.
+> README je verejné rovnako ako všetko ostatné.
 
 > **Zálohuj si `strava.source.json` mimo repozitára.** Je v `.gitignore`, takže pri
 > novom klone tam nebude a bez neho sa obsah nedá upraviť — len prečítať cez stránku.
