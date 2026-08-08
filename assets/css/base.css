@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════════════════════
+   base.css — farebné tokeny, reset, typografia, utility triedy
+   Farby kotúčov určujú celú identitu dokumentu:
+   25 kg červená = najlepšie, 5 kg sivá = najhoršie.
+   ═══════════════════════════════════════════════════════════ */
+
+:root{
+  --paper:#e7eaee; --card:#ffffff; --ink:#0e1216; --ink2:#5a636e; --ink3:#8d959e;
+  --line:#d2d7dd; --line2:#e6e9ed; --chalk:#f2f4f7;
+
+  /* farby kotúčov: 25 / 20 / 15 / 10 / 5 kg */
+  --p25:#bf3a2b; --p20:#17559b; --p15:#d99b00; --p10:#1f7a44; --p05:#78828d;
+  --ok:#1f7a44; --warn:#d99b00; --bad:#bf3a2b;
+
+  --fd:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --fm:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --r:3px;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--fd); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+
+/* ---------- typografia ---------- */
+h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.022em;line-height:1.12}
+h1{font-size:clamp(30px,7.2vw,52px);text-transform:uppercase;letter-spacing:-.035em}
+h2{font-size:clamp(21px,4.6vw,30px)}
+h3{font-size:clamp(17px,3.4vw,20px)}
+h4{font-size:15px;letter-spacing:0}
+p{margin:0 0 12px}
+a{color:var(--p20)}
+:focus-visible{outline:2.5px solid var(--p20);outline-offset:2px}
+
+.eyebrow{
+  font-family:var(--fm);font-size:11px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:8px
+}
+.lead{font-size:17px;color:var(--ink2)}
+.small{font-size:13.5px;color:var(--ink2)}
+.mono{font-family:var(--fm)}
+.num{font-family:var(--fm);font-variant-numeric:tabular-nums;font-weight:600}
+strong{font-weight:700}
+
+/* ---------- prvky, ktoré sa opakujú v každej sekcii ---------- */
+.acclabel{
+  font-family:var(--fm);font-size:11px;letter-spacing:.1em;color:var(--ink3);
+  text-transform:uppercase;font-weight:700
+}
+.btn{
+  font-family:var(--fm);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;background:var(--ink);color:#fff;border:0;padding:11px 18px;
+  border-radius:var(--r);cursor:pointer
+}
+.btn:hover{background:var(--p20)}
+hr.rule{border:0;border-top:1px solid var(--line);margin:26px 0}
+
+/* ---------- animácia ---------- */
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
