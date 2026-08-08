@@ -47,6 +47,46 @@ export const GLOSSARY = [
   { term: 'Denzitometria', en: 'DXA', def: 'Meranie hustoty kostí. Meria sa práve driek a krčok stehennej kosti — teda miesta, ktoré zaťažuje drep a carry.' }
 ];
 
+/**
+ * Pojmy, ktoré sa vysvetlia priamo v texte — po kliknutí vyskočí definícia.
+ *
+ * `term` musí presne sedieť na heslo v GLOSSARY vyššie.
+ * `forms` sú tvary, v akých sa slovo v texte reálne vyskytuje; slovenčina skloňuje,
+ * takže jeden základný tvar nestačí. Vysvetlí sa vždy len prvý výskyt v sekcii,
+ * inak by bol text posiaty podčiarknutými slovami.
+ *
+ * Zámerne tu NIE sú príliš všeobecné slová („tier", „carry", „séria") — tie by
+ * sa chytali všade a vysvetlivka by prestala niečo znamenať.
+ */
+export const INLINE_TERMS = [
+  { term: 'RIR', forms: ['RIR'] },
+  { term: 'Rozsah pohybu', forms: ['rozsah pohybu', 'rozsahu pohybu', 'ROM'] },
+  { term: 'Zaťaženie v natiahnutí', forms: ['zaťaženie v natiahnutí', 'zaťaženia v natiahnutí', 'napätie v natiahnutí'] },
+  { term: 'Hip hinge', forms: ['hip hinge', 'hip hingu'] },
+  { term: 'Knee flexion', forms: ['knee flexion'] },
+  { term: 'Anti-extension', forms: ['anti-extension'] },
+  { term: 'Anti-rotácia', forms: ['anti-rotácia', 'anti-rotácie', 'anti-rotačný', 'anti-rotačná', 'anti-rotačnej'] },
+  { term: 'Dvojitá progresia', forms: ['dvojitá progresia', 'dvojitú progresiu', 'dvojitej progresie'] },
+  { term: 'Deload', forms: ['deload', 'deloadu', 'deloadovať'] },
+  { term: 'Excentrická fáza', forms: ['excentrická práca', 'excentrickú', 'excentriku', 'excentrická'] },
+  { term: 'Izometrická záťaž', forms: ['izometrická záťaž', 'izometrickú záťaž', 'izometrická', 'izometricky'] },
+  { term: 'Axiálne zaťaženie', forms: ['axiálne zaťaženie', 'axiálneho zaťaženia', 'axiálnym zaťažením', 'axiálna kompresia'] },
+  { term: 'Protrakcia / retrakcia lopatky', forms: ['protrakcia', 'protrakciu', 'protrakcie'] },
+  { term: 'Dorzálna flexia', forms: ['dorzálna flexia', 'dorzálnu flexiu', 'dorzálnej flexie'] },
+  { term: 'Rotátorová manžeta', forms: ['rotátorová manžeta', 'rotátorovej manžety'] },
+  { term: 'Patelofemorálny kĺb', forms: ['patelofemorálny kĺb', 'patelofemorálnom kĺbe'] },
+  { term: 'Propriocepcia', forms: ['propriocepcia', 'proprioceptívny'] },
+  { term: 'Zóna 2', forms: ['zóna 2', 'zóny 2', 'zóne 2', 'zónu 2'] },
+  { term: 'MET', forms: ['MET'] },
+  { term: 'VO₂max', forms: ['VO₂max'] },
+  { term: 'NEAT', forms: ['NEAT'] },
+  { term: 'BMR / udržiavací príjem', forms: ['udržiavací príjem', 'udržiavacieho príjmu', 'BMR'] },
+  { term: 'Rekompozícia', forms: ['rekompozícia', 'rekompozíciu'] },
+  { term: 'Lean bulk', forms: ['lean bulk', 'lean bulku'] },
+  { term: 'Interferenčný efekt', forms: ['interferenčný efekt', 'Interferenčný efekt'] },
+  { term: 'Denzitometria', forms: ['denzitometria'] }
+];
+
 /** Úrovne istoty — mapujú sa na triedy .c-high / .c-mid / .c-low. */
 export const CONFIDENCE_LEVELS = {
   high: { css: 'c-high', label: 'Konsenzus' },

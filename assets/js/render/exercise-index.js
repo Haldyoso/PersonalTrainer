@@ -49,13 +49,28 @@ function card(ex) {
   </div>`;
 }
 
+/** Bez filtra by sa vysypalo 45 kariet naraz — to je stena. Ukáž deväť a ponúkni zvyšok. */
+const PREVIEW = 9;
+let showAll = false;
+
+const isFiltered = () => Boolean(query) || Object.values(selected).some((s) => s.size);
+
 function renderResults() {
   const hits = EXERCISES.filter(matches);
   const counts = TIERS.map((t) => `${t}: ${hits.filter((h) => h.tier === t).length}`).join(' · ');
   mount('#x-count', hits.length
     ? `${hits.length} z ${EXERCISES.length} cvikov &nbsp;·&nbsp; ${counts}`
-    : `Žiadny cvik nesedí na túto kombináciu. Uber jeden filter — najčastejšie to je náradie.`);
-  mount('#x-grid', hits.map(card).join(''));
+    : 'Žiadny cvik nesedí na túto kombináciu. Uber jeden filter — najčastejšie to je náradie.');
+
+  const limited = !isFiltered() && !showAll && hits.length > PREVIEW;
+  const shown = limited ? hits.slice(0, PREVIEW) : hits;
+  mount('#x-grid', shown.map(card).join(''));
+
+  mount('#x-more', limited
+    ? `<button type="button" class="btn" id="x-more-btn">Zobraziť všetkých ${hits.length} cvikov</button>`
+    : '');
+  const btn = $('#x-more-btn');
+  if (btn) btn.addEventListener('click', () => { showAll = true; renderResults(); });
 }
 
 function renderFilters() {
@@ -94,9 +109,17 @@ function initQuery() {
 export function resetExerciseFilters() {
   Object.values(selected).forEach((s) => s.clear());
   query = '';
+  showAll = false;
   const input = $('#x-query');
   if (input) input.value = '';
   document.querySelectorAll('#x-filters .fchip').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+  renderResults();
+}
+
+/** Rozbalí celý zoznam — volá sa pred tlačou, aby sa nevytlačilo len deväť cvikov. */
+export function showAllExercises() {
+  if (showAll) return;
+  showAll = true;
   renderResults();
 }
 

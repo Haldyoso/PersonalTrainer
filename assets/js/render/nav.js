@@ -4,6 +4,7 @@
  */
 
 import { $$ } from '../util.js';
+import { showAllExercises } from './exercise-index.js';
 
 /** Podfarbí odkaz sekcie, ktorá je práve na obrazovke, a doscrolluje ho do pásu. */
 export function initNav() {
@@ -38,15 +39,33 @@ export function initReveal() {
 }
 
 /**
+ * Tlačidlá „Rozbaliť všetko / Zbaliť všetko".
+ *
+ * Akordeóny sú zámerne zavreté — dokument má cez 40 rozbaliteľných blokov
+ * a otvorené naraz pôsobia ako stena textu. Kto chce čítať všetko, klikne raz.
+ */
+export function initExpander() {
+  const all = () => $$('details.acc');
+  const setAll = (open) => all().forEach((d) => { d.open = open; });
+
+  $$('[data-expand]').forEach((btn) => {
+    btn.addEventListener('click', () => setAll(btn.dataset.expand === 'open'));
+  });
+}
+
+/**
  * Pred tlačou otvorí všetky akordeóny, po tlači vráti pôvodný stav.
  * Bez toho by sa vytlačila polovica dokumentu.
  */
 export function initPrint() {
   const all = () => document.querySelectorAll('details.acc');
-  window.addEventListener('beforeprint', () => all().forEach((d) => {
-    d.dataset.was = d.open ? '1' : '0';
-    d.open = true;
-  }));
+  window.addEventListener('beforeprint', () => {
+    showAllExercises();
+    all().forEach((d) => {
+      d.dataset.was = d.open ? '1' : '0';
+      d.open = true;
+    });
+  });
   window.addEventListener('afterprint', () => all().forEach((d) => {
     if (d.dataset.was === '0') d.open = false;
   }));

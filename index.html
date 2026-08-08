@@ -41,7 +41,7 @@
       <div id="site-results" class="sresults" role="listbox" hidden></div>
     </div>
     <div class="navscroll" id="nav">
-      <a href="#zhrnutie">Zhrnutie</a>
+      <a href="#zhrnutie">Tvoj plán</a>
       <a href="#objem">Objem</a>
       <a href="#podregiony">Podregióny</a>
       <a href="#vzory">Vzory</a>
@@ -66,36 +66,58 @@
 
 <div class="wrap">
 
-<!-- ══════════ 01 ZHRNUTIE ══════════ -->
+<!-- ══════════ 01 TVOJ PLÁN ══════════ -->
 <section id="zhrnutie">
-  <div class="sechead"><span class="eyebrow">01 · Zhrnutie</span><h2>Päť viet, ak nemáš čas na zvyšok</h2></div>
+  <div class="sechead"><span class="eyebrow">01 · Tvoj plán</span><h2>Ak si toho prečítaš len toľko, stačí to</h2></div>
 
-  <div class="card">
-    <ol style="margin:0;padding-left:20px">
-      <li style="margin-bottom:10px"><strong>Čo je dobré:</strong> výber cvikov na prsia, chrbát a bočný deltoid je nadpriemerný. Žiadny cvik v pláne nie je odpad — máš tam <span class="num">0</span> cvikov v D tieri. Rozsah 3–4 série a 8+ opakovaní je v poriadku, rovnako 4-dňová rotácia. Problém nie je kvalita, ale <em>rozloženie</em>.</li>
-      <li style="margin-bottom:10px"><strong>Diera č. 1 — nohy a zadné stehná.</strong> Hamstringy dostávajú <span class="num">3,5</span> série týždenne a <span class="num">0</span> z nich je knee flexion (ohyb v kolene). Chýba drep, chýba leg curl, chýba gastrocnemius. Nohy tvoria <span class="num">25 %</span> celého objemu.</li>
-      <li style="margin-bottom:10px"><strong>Diera č. 2 — core a úchop: úplná nula.</strong> Žiadny anti-extension, žiadna anti-rotácia, žiadny carry. Pritom robíš barbell bent-over row a RDL — dva cviky, ktoré predpokladajú silný trup.</li>
-      <li style="margin-bottom:10px"><strong>Diera č. 3 — zadný deltoid a deň ramien.</strong> Zadný deltoid nemá ani jednu priamu sériu. Deň ramien má <span class="num">2</span> cviky a trvá ~20 minút — je to najväčšia nevyužitá kapacita v celom pláne.</li>
-      <li><strong>Čo zmeniť ako prvé (jedna vec, tento týždeň):</strong> prebuduj deň ramien. Pridaj doň cable lateral raise, face pull, seated leg curl a hanging leg raise. Jediným zásahom opravíš zadný deltoid, hamstringy aj core — a deň stále vojde do 50 minút.</li>
-    </ol>
-  </div>
+  <p class="lead">Zvyšok dokumentu vysvetľuje, prečo to tak je. Táto sekcia hovorí, čo robiť.</p>
+
+  <h3 style="margin-bottom:10px">Štyri tréningové dni</h3>
+  <div class="qtiles" id="qs-days"></div>
+  <p class="small" style="margin-bottom:22px">Rotuj ich za sebou — 1, 2, 3, 4, 1, 2… <strong>bez ohľadu na deň v týždni.</strong> Keď stihneš tri tréningy, prejdi na trojdňovú verziu; je pri rozpise.</p>
+
+  <h3 style="margin-bottom:4px">Päť pravidiel</h3>
+  <div class="card" id="qs-rules" style="padding-top:4px"></div>
+
+  <h3 style="margin:22px 0 10px">Tri veci, ktoré v pláne chýbali</h3>
+  <div class="qholes" id="qs-holes"></div>
+
+  <h3 style="margin:22px 0 10px">Kam ďalej</h3>
+  <div class="qnexts" id="qs-next"></div>
+
+  <details class="acc" style="margin-top:18px">
+    <summary>To isté v číslach <span class="acclabel">pôvodné zhrnutie</span></summary>
+    <div class="accbody">
+      <ol style="margin:0;padding-left:20px">
+        <li style="margin-bottom:10px"><strong>Čo je dobré:</strong> výber cvikov na prsia, chrbát a bočný deltoid je nadpriemerný. Žiadny cvik v pláne nie je odpad — máš tam <span class="num">0</span> cvikov v D tieri. Rozsah 3–4 série a 8+ opakovaní je v poriadku, rovnako 4-dňová rotácia. Problém nie je kvalita, ale <em>rozloženie</em>.</li>
+        <li style="margin-bottom:10px"><strong>Diera č. 1 — nohy a zadné stehná.</strong> Hamstringy dostávajú <span class="num">3,5</span> série týždenne a <span class="num">0</span> z nich je knee flexion (ohyb v kolene). Chýba drep, chýba leg curl, chýba gastrocnemius. Nohy tvoria <span class="num">25 %</span> celého objemu.</li>
+        <li style="margin-bottom:10px"><strong>Diera č. 2 — core a úchop: úplná nula.</strong> Žiadny anti-extension, žiadna anti-rotácia, žiadny carry. Pritom robíš barbell bent-over row a RDL — dva cviky, ktoré predpokladajú silný trup.</li>
+        <li style="margin-bottom:10px"><strong>Diera č. 3 — zadný deltoid a deň ramien.</strong> Zadný deltoid nemá ani jednu priamu sériu. Deň ramien má <span class="num">2</span> cviky a trvá ~20 minút — je to najväčšia nevyužitá kapacita v celom pláne.</li>
+        <li><strong>Čo zmeniť ako prvé (jedna vec, tento týždeň):</strong> prebuduj deň ramien. Pridaj doň cable lateral raise, face pull, seated leg curl a hanging leg raise. Jediným zásahom opravíš zadný deltoid, hamstringy aj core — a deň stále vojde do 50 minút.</li>
+      </ol>
+    </div>
+  </details>
 
   <div class="note">
-    <b>Ako čítať tento dokument</b>
-    Tier list používa farby súťažných kotúčov: <strong style="color:var(--p25)">červená = 25 kg = S</strong>, modrá 20 = A, žltá 15 = B, zelená 10 = C, sivá 5 = D. Čím ťažší kotúč, tým lepší cvik. Všetky dlhé tabuľky sú zbaliteľné — klikni na nadpis. Vyhľadávacie pole hore nájde cvik, sekciu aj pojem <em>aj vtedy, keď sú zabalené</em> — na to Ctrl+F nestačí. Stránka je urobená na tlač (Ctrl/Cmd + P) aj do PDF; ťaháky a denník do posilky sú úplne na konci.
-  </div>
-
-  <div class="grid2">
-    <div class="note good"><b>Kde začať, ak máš päť minút</b>Sekcia <a href="#diery">07 — Zanedbané partie</a>. Je zoradená podľa toho, koľko ťa každá diera stojí, a pri každej je aj to, kam cvik zaradiť a čo zaň vypustiť.</div>
-    <div class="note warn"><b>Kde začať, ak máš mesiac</b>Sekcia <a href="#cyklus">11 — 12-týždňový cyklus</a>. Prvé dva týždne sa nové cviky len učíš. Kto to preskočí, spraví hack squat na polovičný rozsah a RDL s guľatým chrbtom — a bude si myslieť, že plán nefunguje.</div>
+    <b>Tri veci o tejto stránke</b>
+    <strong>Podčiarknuté slová</strong> ako <span class="mono">RIR</span> sa dajú kliknúť — vyskočí vysvetlenie.
+    <strong>Sekcie nižšie sú zbalené</strong> zámerne; klikni na nadpis, ktorý ťa zaujíma.
+    <strong>Hore je vyhľadávanie</strong> (Ctrl + K), ktoré nájde cvik aj v zabalenej tabuľke.
   </div>
 </section>
+
+<div class="expander noprint">
+  <span>Ďalej už ide rozbor. Sekcie sú zbalené — klikni na nadpis, ktorý ťa zaujíma.</span>
+  <button type="button" data-expand="open">Rozbaliť všetko</button>
+  <button type="button" data-expand="close">Zbaliť všetko</button>
+</div>
 
 <!-- ══════════ 02 OBJEM ══════════ -->
 <section id="objem">
   <div class="sechead"><span class="eyebrow">02 · Objem a rozloženie</span><h2>Koľko sérií kam reálne padá</h2></div>
 
-  <p class="lead">Rátam priame série plnou váhou a nepriame koeficientom 0,5. Za priemer beriem 3,5 série na cvik (tvoje „3–4“). Pri 3 tréningoch týždenne rotuješ 4 dni, takže každý deň vychádza priemerne 0,75× za týždeň — preto sú čísla nižšie.</p>
+  <p class="lead">Koľko sérií týždenne reálne dostane ktorá partia — a či je to málo, akurát alebo veľa.</p>
+  <p class="small" style="margin-bottom:16px">Ako to počítam: cvik, kde je partia hlavným cieľom, sa ráta celý; kde len pomáha, polovicou. Za priemer beriem 3,5 série na cvik (tvoje „3–4“). Pri 3 tréningoch a 4-dňovej rotácii vyjde každý deň priemerne 0,75× za týždeň — preto je stĺpec „3×“ nižší.</p>
 
   <div class="card">
     <figure>
@@ -110,7 +132,7 @@
     </figure>
   </div>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Tabuľka: série na partiu za týždeň <span class="acclabel">3× vs 4×</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -158,7 +180,7 @@
     </figure>
   </div>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Horná časť tela <span class="acclabel">14 podregiónov</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -189,7 +211,7 @@
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Dolná časť tela a trup <span class="acclabel">10 podregiónov</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -295,7 +317,7 @@
 
   <p class="lead">Hodnotenie je <strong>vnútri partie</strong>, nie naprieč telom — S-tier cvik na lýtka nie je „lepší“ ako A-tier cvik na chrbát. Farby zodpovedajú súťažným kotúčom: červená 25 kg je najťažšia, teda najlepšia.</p>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Podľa čoho hodnotím <span class="acclabel">8 kritérií</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -359,7 +381,7 @@
 
   <p class="lead">Zoradené podľa dôležitosti. Pri každej diere je aj to, <em>kam</em> cvik zaradiť a <em>čo</em> zaň vypustiť, aby tréning nebol dlhší.</p>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary><span class="num" style="color:var(--p25)">01</span> &nbsp;Knee flexion — hamstringy <span class="acclabel">Diera č. 1</span></summary>
     <div class="accbody">
       <p><strong>Prečo je to najväčší problém:</strong> RDL zaťažuje hamstringy cez bedro, čím trénuje hlavne dlhé hlavy. Semitendinosus, semimembranosus a krátka hlava bicepsu femoris reagujú výrazne silnejšie na ohyb v kolene. Tie máš na nule. Zároveň sú hamstringy s 3,5 sériami najmenej trénovanou veľkou partiou celého tela — a nerovnováha voči kvadricepsu 2:1 je rizikový faktor pre koleno aj natrhnutie zadného stehna.</p>
@@ -377,7 +399,7 @@
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary><span class="num" style="color:var(--p25)">02</span> &nbsp;Core — anti-extension a anti-rotácia <span class="acclabel">Diera č. 2</span></summary>
     <div class="accbody">
       <p><strong>Prečo:</strong> nula sérií. Trup je to, čo prenáša silu medzi nohami a rukami — pri barbell row a RDL je limitujúcim článkom. Z hľadiska longevity je slabý trup priama cesta k bolestiam driekovej chrbtice po štyridsiatke.</p>
@@ -396,7 +418,7 @@
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary><span class="num" style="color:var(--p25)">03</span> &nbsp;Zadný deltoid a externá rotácia <span class="acclabel">Diera č. 3</span></summary>
     <div class="accbody">
       <p><strong>Prečo:</strong> 3 tlakové cviky na prsia týždenne a nula priamych sérií na zadný deltoid. Vizuálne to obmedzuje šírku ramien z profilu, funkčne to vedie k dopredu zrotovaným ramenám a dlhodobo k dráždeniu ramenného kĺbu.</p>
@@ -549,7 +571,7 @@
 <section id="cviky">
   <div class="sechead"><span class="eyebrow">09 · Index cvikov</span><h2>Keď stojíš v posilke a potrebuješ náhradu</h2></div>
 
-  <p class="lead">Ten istý zoznam ako v tier liste, len otočený naruby: nefiltruje sa podľa toho, čo som napísal ja, ale podľa toho, čo máš práve k dispozícii. Vnútri jednej skupiny filtrov platí „alebo“, medzi skupinami „a zároveň“.</p>
+  <p class="lead">Vyfiltruj si cviky podľa toho, čo máš práve voľné.</p>
 
   <div class="card">
     <div class="searchbar" style="padding:0 0 12px">
@@ -559,6 +581,7 @@
     <div class="filters" id="x-filters"></div>
     <p class="xcount" id="x-count"></p>
     <div class="xgrid" id="x-grid"></div>
+    <p id="x-more" style="margin:14px 0 0"></p>
   </div>
 
   <div class="note"><b>Ako to použiť</b>
@@ -569,7 +592,7 @@
 <section id="premenne">
   <div class="sechead"><span class="eyebrow">10 · Ostatné premenné</span><h2>Rozcvička, progresia, deload, čas</h2></div>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Je 5 minút rozcvičky dosť? <span class="acclabel">Nie tak celkom</span></summary>
     <div class="accbody">
       <p><strong>Krátka odpoveď:</strong> 5 minút <em>všeobecnej</em> rozcvičky stačí. Čo ti pravdepodobne chýba, sú <strong>rozohrievacie série pred pracovnými</strong> — a to je pri ťažkých cvikoch dôležitejšie než samotný pás.</p>
@@ -588,7 +611,7 @@
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Progresívne preťaženie — konkrétny model <span class="acclabel">dvojitá progresia</span></summary>
     <div class="accbody">
       <p>Používaj <strong>dvojitú progresiu</strong>: najprv rastú opakovania, potom váha. Je to jediný model, ktorý nepotrebuje testovať maximá a funguje aj na izolácie a stroje.</p>
@@ -704,7 +727,7 @@
 
   <div class="lgrid wide" id="meso-phases" style="margin-bottom:14px"></div>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Týždeň po týždni <span class="acclabel">čo urobiť a na čo pozerať</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -716,7 +739,7 @@
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Kontrolné body <span class="acclabel">merať v týždni 1, 7 a 12</span></summary>
     <div class="accbody">
       <p class="small" style="margin-bottom:12px">Vždy za rovnakých podmienok: ráno, nalačno, ten istý stroj, to isté nastavenie sedadla. Meranie, ktoré sa raz spraví inak, je horšie než žiadne — vytvorí falošný trend.</p>
@@ -738,7 +761,7 @@
 <section id="rizika">
   <div class="sechead"><span class="eyebrow">12 · Riziká a poradie</span><h2>Čo ťa môže vyradiť a čo je poprehadzované</h2></div>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Rizikové cviky v tvojom pláne <span class="acclabel">5 položiek</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -757,7 +780,7 @@
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Poradie cvikov — čo prehodiť <span class="acclabel">2 zásahy</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -811,7 +834,7 @@
     <div class="lgrid" id="longdash"></div>
   </div>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Kardio — koľko, kedy a či sa to vôbec dá stihnúť <span class="acclabel">najväčšia medzera</span></summary>
     <div class="accbody">
       <h4 style="margin-bottom:8px">Najprv: je tvoja chôdza so sklonom vôbec zóna 2?</h4>
@@ -851,7 +874,7 @@
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Sila úchopu <span class="acclabel">prediktor dlhovekosti, v pláne nula</span></summary>
     <div class="accbody">
       <p>Sila stisku ruky je jeden z najlepšie zdokumentovaných jednoduchých prediktorov celkovej mortality — nie preto, že by silné predlaktia predlžovali život, ale preto, že úchop veľmi presne odráža celkovú svalovú hmotu a nervovú funkciu. Vo veľkých kohortových štúdiách (napr. PURE) sa každý pokles o niekoľko kilogramov stisku spája s merateľne vyšším rizikom. Ako <em>ukazovateľ</em> je teda mimoriadne užitočný — a keďže ho ovplyvňuje to isté, čo naberanie svalov, oplatí sa ho aj priamo trénovať.</p>
@@ -958,7 +981,7 @@
   <div class="note bad"><b>Prečo to patrí do tréningového dokumentu</b>
   Lebo to mení, ktoré cviky sú prioritné. Face pull, reverse pec deck, back extension a mobilita hrudnej chrbtice nie sú v novom pláne kvôli estetike — sú tam preto, že osem hodín denne pracuje proti nim. Bez sedavej práce by boli voliteľné. S ňou nie sú.</div>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Čo sedenie robí a čím to vyvážiť <span class="acclabel">6 oblastí</span></summary>
     <div class="accbody">
       <div class="tscroll">
@@ -1032,14 +1055,14 @@
 
   <p class="lead">Druhá polovica tejto sekcie je dôležitejšia než prvá. Dokument pracuje s číslami, ktoré vyzerajú presne — 12,3 série, 6,3 MET, tier S. Časť z nich je konsenzus literatúry, časť je správny smer bez presného čísla a časť je môj odhad. Tu je to rozdelené.</p>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Slovník pojmov <span class="acclabel">36 hesiel</span></summary>
     <div class="accbody">
       <div class="gloss" id="glossary"></div>
     </div>
   </details>
 
-  <details class="acc" open>
+  <details class="acc">
     <summary>Čo je doložené a čo je odhad <span class="acclabel">tvrdenie po tvrdení</span></summary>
     <div class="accbody">
       <div class="phaselegend" id="confidence-legend"></div>

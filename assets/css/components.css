@@ -4,6 +4,71 @@
    mezocyklus, slovník, sedavá práca
    ═══════════════════════════════════════════════════════════ */
 
+/* ---------- úvodná obrazovka „Tvoj plán" ---------- */
+.qtiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:10px;margin-bottom:8px}
+.qtile{
+  display:block;background:#fff;border:1px solid var(--line);border-left:4px solid var(--p25);
+  border-radius:var(--r);padding:13px 14px;text-decoration:none;color:var(--ink)
+}
+.qtile:hover{border-color:var(--ink);border-left-color:var(--p25)}
+.qtile b{display:block;font-size:15px;line-height:1.25;margin:6px 0 5px}
+.qtile .qmeta{font-family:var(--fm);font-size:11px;letter-spacing:.05em;color:var(--ink2)}
+.qnum{
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  width:22px;height:22px;border-radius:99px;background:var(--ink);color:#fff;
+  font-family:var(--fm);font-size:12px;font-weight:700
+}
+.qrule{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.qrule:last-child{border-bottom:0;padding-bottom:0}
+.qrule h4{margin-bottom:3px;font-size:15.5px}
+.qrule p{margin:0;font-size:14.5px;color:var(--ink2)}
+.qholes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.qhole{background:#fff;border:1px solid var(--line);border-top:4px solid var(--p25);border-radius:var(--r);padding:14px}
+.qhole h4{margin-bottom:6px}
+.qhole p{font-size:13.5px;color:var(--ink2);margin:0 0 8px}
+.qhole .qfix{
+  font-family:var(--fm);font-size:12px;color:var(--ink);font-weight:700;
+  margin:0;padding-top:8px;border-top:1px solid var(--line2)
+}
+.qnexts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.qnexts{grid-template-columns:1fr}}
+.qnext{
+  display:block;background:var(--chalk);border:1px solid var(--line);border-radius:var(--r);
+  padding:12px 14px;text-decoration:none;color:var(--ink)
+}
+.qnext:hover{background:#fff;border-color:var(--ink)}
+.qnext b{display:block;font-size:14.5px;margin-bottom:3px}
+.qnext b::after{content:" →";color:var(--p25)}
+.qnext span{font-size:13px;color:var(--ink2)}
+
+/* ---------- vysvetlivky pojmov ---------- */
+.term{
+  font:inherit;color:inherit;background:none;border:0;padding:0;cursor:help;
+  border-bottom:1px dashed var(--p20);text-underline-offset:2px
+}
+.term:hover{color:var(--p20)}
+.termpop{
+  position:fixed;z-index:80;background:#fff;border:1px solid var(--ink);border-radius:var(--r);
+  padding:12px 14px;box-shadow:0 14px 34px rgba(14,18,22,.22)
+}
+.termpop[hidden]{display:none}
+.termpop b{display:block;font-size:14.5px;margin-bottom:4px}
+.termpop .en{font-family:var(--fm);font-size:11px;color:var(--ink3);font-weight:400}
+.termpop p{font-size:13.5px;color:var(--ink2);margin:0 0 8px}
+.termpop a{font-family:var(--fm);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- ovládanie rozbalenia ---------- */
+.expander{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin:0 0 14px;font-size:13.5px;color:var(--ink2)
+}
+.expander button{
+  font-family:var(--fm);font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;
+  background:#fff;color:var(--ink2);border:1px solid var(--line);border-radius:99px;
+  padding:6px 12px;cursor:pointer
+}
+.expander button:hover{border-color:var(--ink);color:var(--ink)}
+
 /* ---------- akordeón ---------- */
 details.acc{
   background:var(--card);border:1px solid var(--line);border-radius:var(--r);
