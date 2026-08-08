@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Analýza tréningového plánu — 180 cm / 85 kg</title>
+<style>
+:root{
+  --paper:#e7eaee; --card:#ffffff; --ink:#0e1216; --ink2:#5a636e; --ink3:#8d959e;
+  --line:#d2d7dd; --line2:#e6e9ed; --chalk:#f2f4f7;
+  /* farby kotúčov: 25 / 20 / 15 / 10 / 5 kg */
+  --p25:#bf3a2b; --p20:#17559b; --p15:#d99b00; --p10:#1f7a44; --p05:#78828d;
+  --ok:#1f7a44; --warn:#d99b00; --bad:#bf3a2b;
+  --fd:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --fm:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --r:3px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--fd); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+
+/* ---------- typografia ---------- */
+h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.022em;line-height:1.12}
+h1{font-size:clamp(30px,7.2vw,52px);text-transform:uppercase;letter-spacing:-.035em}
+h2{font-size:clamp(21px,4.6vw,30px)}
+h3{font-size:clamp(17px,3.4vw,20px)}
+h4{font-size:15px;letter-spacing:0}
+p{margin:0 0 12px}
+a{color:var(--p20)}
+.eyebrow{
+  font-family:var(--fm);font-size:11px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:8px
+}
+.lead{font-size:17px;color:var(--ink2)}
+.small{font-size:13.5px;color:var(--ink2)}
+.mono{font-family:var(--fm)}
+.num{font-family:var(--fm);font-variant-numeric:tabular-nums;font-weight:600}
+strong{font-weight:700}
+
+/* ---------- hlavička ---------- */
+header.hero{background:var(--ink);color:#fff;padding:34px 0 26px;border-bottom:5px solid var(--p25)}
+header.hero .eyebrow{color:#8b96a3}
+header.hero h1{color:#fff}
+.subtitle{color:#aeb8c3;font-family:var(--fm);font-size:12.5px;letter-spacing:.06em;margin-top:12px;text-transform:uppercase}
+.statstrip{display:flex;flex-wrap:wrap;gap:0;margin-top:22px;border-top:1px solid #2b3238}
+.statstrip div{flex:1 1 120px;padding:12px 12px 12px 0;border-right:1px solid #2b3238}
+.statstrip div:last-child{border-right:0}
+.statstrip b{display:block;font-family:var(--fm);font-size:22px;font-weight:700;line-height:1}
+.statstrip span{display:block;font-size:11px;color:#8b96a3;text-transform:uppercase;letter-spacing:.1em;margin-top:6px}
+
+/* ---------- navigácia ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(231,234,238,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.navscroll{display:flex;gap:6px;overflow-x:auto;padding:9px 16px;scrollbar-width:none;max-width:920px;margin:0 auto}
+.navscroll::-webkit-scrollbar{display:none}
+.navscroll a{
+  flex:0 0 auto;font-family:var(--fm);font-size:11.5px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;text-decoration:none;color:var(--ink2);
+  padding:6px 10px;border:1px solid var(--line);border-radius:99px;background:#fff;white-space:nowrap
+}
+.navscroll a:hover{border-color:var(--ink);color:var(--ink)}
+.navscroll a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+:focus-visible{outline:2.5px solid var(--p20);outline-offset:2px}
+
+/* ---------- sekcie a karty ---------- */
+section{padding:34px 0 6px;scroll-margin-top:60px}
+.sechead{border-top:3px solid var(--ink);padding-top:12px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.card.tight{padding:14px}
+.note{border-left:3px solid var(--p20);background:#f4f7fb;padding:12px 14px;margin:14px 0;font-size:14.5px;border-radius:0 var(--r) var(--r) 0}
+.note.warn{border-left-color:var(--p15);background:#fdf8ec}
+.note.bad{border-left-color:var(--p25);background:#fdf2f0}
+.note.good{border-left-color:var(--p10);background:#f0f7f2}
+.note b{display:block;font-family:var(--fm);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+
+/* ---------- akordeón ---------- */
+details.acc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+details.acc>summary{
+  cursor:pointer;list-style:none;padding:14px 16px;font-weight:700;font-size:15.5px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px
+}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"+";font-family:var(--fm);font-size:20px;color:var(--ink3);font-weight:400;line-height:1}
+details.acc[open]>summary::after{content:"–"}
+details.acc[open]>summary{border-bottom:1px solid var(--line2)}
+.accbody{padding:16px}
+.acclabel{font-family:var(--fm);font-size:11px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;font-weight:700}
+
+/* ---------- tabuľky ---------- */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+table.narrow{min-width:0}
+th,td{text-align:left;padding:8px 9px;border-bottom:1px solid var(--line2);vertical-align:top}
+thead th{
+  font-family:var(--fm);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink2);font-weight:700;border-bottom:2px solid var(--ink);background:var(--chalk)
+}
+tbody tr:nth-child(even){background:#fafbfc}
+td.n,th.n{font-family:var(--fm);font-variant-numeric:tabular-nums;white-space:nowrap}
+caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink2);padding-bottom:8px}
+
+/* ---------- štítky ---------- */
+.badge{
+  display:inline-block;font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;padding:2px 6px;border-radius:2px;vertical-align:middle;white-space:nowrap
+}
+.b-new{background:var(--p25);color:#fff}
+.b-keep{background:var(--chalk);color:var(--ink2);border:1px solid var(--line)}
+.b-move{background:#e8f0fa;color:var(--p20);border:1px solid #c3d6ec}
+.b-mod{background:#fdf3dd;color:#8a6300;border:1px solid #e8d3a0}
+.b-cut{background:#f7e7e5;color:var(--p25);border:1px solid #ecc7c2;text-decoration:line-through}
+.tag{display:inline-block;font-family:var(--fm);font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:2px;color:#fff}
+.t-ok{background:var(--ok)} .t-part{background:var(--warn)} .t-no{background:var(--bad)}
+
+/* ---------- tier list ---------- */
+.tierlegend{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:16px}
+.tierlegend div{background:#fff;border:1px solid var(--line);border-left-width:5px;padding:8px 10px;font-size:12.5px;border-radius:var(--r)}
+.tierlegend b{font-family:var(--fm);font-size:15px;display:block}
+.trow{display:flex;border:1px solid var(--line);border-bottom:0;background:#fff}
+.trow:last-child{border-bottom:1px solid var(--line)}
+.tlabel{
+  flex:0 0 46px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:24px;font-weight:800;color:#fff
+}
+.titems{flex:1;display:flex;flex-wrap:wrap;gap:6px;padding:8px}
+.chip{
+  border:1px solid var(--line);border-radius:2px;padding:5px 8px;font-size:12.5px;line-height:1.25;
+  background:var(--chalk);position:relative
+}
+.chip .mg{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.chip.new{background:#fdf1ef;border-color:#e9c3bc}
+.chip.new::after{content:"NOVÉ";position:absolute;top:-7px;right:-5px;background:var(--p25);color:#fff;font-family:var(--fm);font-size:8px;font-weight:700;padding:1px 4px;border-radius:2px}
+.chip.cut{opacity:.55;text-decoration:line-through}
+.tS{background:var(--p25)} .tA{background:var(--p20)} .tB{background:var(--p15)}
+.tC{background:var(--p10)} .tD{background:var(--p05)}
+.bS{border-left-color:var(--p25)} .bA{border-left-color:var(--p20)} .bB{border-left-color:var(--p15)}
+.bC{border-left-color:var(--p10)} .bD{border-left-color:var(--p05)}
+.tiercell{font-family:var(--fm);font-weight:800;color:#fff;text-align:center;border-radius:2px;padding:2px 0;display:block;width:26px}
+
+/* ---------- grafy ---------- */
+figure{margin:0 0 6px}
+figcaption{font-size:12.5px;color:var(--ink2);margin-top:8px}
+svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-family:var(--fm);font-size:11px;color:var(--ink2);margin-top:10px}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:5px;vertical-align:-1px;border-radius:2px}
+
+/* ---------- heatmapa ---------- */
+.hm{border-collapse:collapse;font-size:11px;min-width:760px}
+.hm th{padding:4px 3px;font-family:var(--fm);font-size:9.5px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink2);border-bottom:2px solid var(--ink);background:var(--chalk);vertical-align:bottom;text-align:center}
+.hm th.rowh{text-align:left;position:sticky;left:0;background:var(--chalk);z-index:2;min-width:172px;border-right:1px solid var(--line)}
+.hm td.rowh{text-align:left;position:sticky;left:0;background:#fff;z-index:1;font-size:11.5px;font-weight:600;min-width:172px;border-right:1px solid var(--line);padding:4px 8px 4px 6px}
+.hm td{padding:0;border:1px solid #fff;text-align:center;width:34px;height:24px}
+.hm i{display:block;height:24px;line-height:24px;font-family:var(--fm);font-size:9px;font-weight:700;font-style:normal}
+.h2c{background:var(--p25);color:#fff} .h1c{background:#f0c4bd;color:#7a2a20} .h0c{background:#eef0f2;color:#c3c9cf}
+
+/* ---------- longevity ---------- */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.lcard{background:#fff;border:1px solid var(--line);border-top:4px solid var(--line);border-radius:var(--r);padding:14px}
+.lcard.ok{border-top-color:var(--ok)} .lcard.part{border-top-color:var(--warn)} .lcard.no{border-top-color:var(--bad)}
+.lcard h4{margin-bottom:6px}
+.lcard .st{float:right}
+.meter{height:6px;background:var(--line2);border-radius:99px;overflow:hidden;margin:8px 0 10px}
+.meter i{display:block;height:100%;border-radius:99px}
+
+/* ---------- ťahák ---------- */
+.sheet{background:#fff;border:2px solid var(--ink);border-radius:var(--r);padding:16px;margin-bottom:14px;page-break-inside:avoid;break-inside:avoid}
+.sheet h3{border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sheet h3 span{font-family:var(--fm);font-size:11px;font-weight:700;color:var(--ink2);letter-spacing:.08em}
+.sheet table{min-width:0;font-size:13px}
+.sheet th,.sheet td{padding:6px 5px}
+.blank{display:inline-block;min-width:52px;border-bottom:1px solid var(--ink3);height:15px}
+
+hr.rule{border:0;border-top:1px solid var(--line);margin:26px 0}
+footer{background:var(--ink);color:#8b96a3;padding:26px 0 34px;margin-top:40px;font-size:12.5px}
+footer b{color:#fff}
+.backtop{display:inline-block;font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-decoration:none;margin-top:6px}
+
+/* ---------- animácia ---------- */
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}*{animation:none!important;transition:none!important}}
+
+/* ---------- tlač ---------- */
+@media print{
+  :root{--paper:#fff}
+  body{background:#fff;font-size:10.5pt}
+  nav,.backtop,.printbtn{display:none!important}
+  header.hero{background:#fff;color:#000;border-bottom:3px solid #000;padding:0 0 12px}
+  header.hero h1,header.hero .eyebrow,.subtitle{color:#000}
+  .statstrip,.statstrip div{border-color:#999}
+  .statstrip span{color:#444}
+  section{padding:14px 0 0;page-break-inside:auto}
+  .card,.acc,.sheet,figure,.lcard,.trow{page-break-inside:avoid;break-inside:avoid}
+  details.acc{border:1px solid #bbb}
+  details.acc>summary::after{display:none}
+  .accbody{display:block!important}
+  .tscroll{overflow:visible}
+  table{min-width:0!important;font-size:8.5pt}
+  .hm{min-width:0!important;font-size:7pt}
+  .hm td.rowh,.hm th.rowh{position:static;min-width:0}
+  .reveal{opacity:1!important;transform:none!important}
+  footer{background:#fff;color:#444;border-top:1px solid #000}
+  a[href^="#"]{text-decoration:none;color:#000}
+  h2{page-break-after:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Audit tréningového plánu · august 2026</span>
+    <h1>Dobrý plán<br>s troma dierami</h1>
+    <p class="subtitle">Muž · 180 cm · ~85 kg · 3 roky tréningu · 3–4× týždenne · 45–60 min</p>
+    <div class="statstrip">
+      <div><b>12,3</b><span>sérií / biceps</span></div>
+      <div><b>3,5</b><span>sérií / hamstringy</span></div>
+      <div><b>0</b><span>sérií / core</span></div>
+      <div><b>0</b><span>priamych sérií / zadný D.</span></div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navscroll" id="nav">
+    <a href="#zhrnutie">Zhrnutie</a>
+    <a href="#objem">Objem</a>
+    <a href="#podregiony">Podregióny</a>
+    <a href="#vzory">Pohybové vzory</a>
+    <a href="#heatmapa">Heatmapa</a>
+    <a href="#tier">Tier list</a>
+    <a href="#diery">Diery + odporúčania</a>
+    <a href="#plan">Nový plán</a>
+    <a href="#premenne">Premenné</a>
+    <a href="#rizika">Riziká</a>
+    <a href="#nahrady">Náhrady</a>
+    <a href="#technika">Technika</a>
+    <a href="#longevity">Longevity</a>
+    <a href="#vyziva">Výživa</a>
+    <a href="#tahak">Ťaháky</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ══════════ ZHRNUTIE ══════════ -->
+<section id="zhrnutie">
+  <div class="sechead"><span class="eyebrow">01 · Zhrnutie</span><h2>Päť viet, ak nemáš čas na zvyšok</h2></div>
+
+  <div class="card">
+    <ol style="margin:0;padding-left:20px">
+      <li style="margin-bottom:10px"><strong>Čo je dobré:</strong> výber cvikov na prsia, chrbát a bočný deltoid je nadpriemerný. Žiadny cvik v pláne nie je odpad — máš tam <span class="num">0</span> cvikov v D tieri. Rozsah 3–4 série a 8+ opakovaní je v poriadku, rovnako 4-dňová rotácia. Problém nie je kvalita, ale <em>rozloženie</em>.</li>
+      <li style="margin-bottom:10px"><strong>Diera č. 1 — nohy a zadné stehná.</strong> Hamstringy dostávajú <span class="num">3,5</span> série týždenne a <span class="num">0</span> z nich je knee flexion (ohyb v kolene). Chýba drep, chýba leg curl, chýba gastrocnemius. Nohy tvoria <span class="num">25 %</span> celého objemu.</li>
+      <li style="margin-bottom:10px"><strong>Diera č. 2 — core a úchop: úplná nula.</strong> Žiadny anti-extension, žiadna anti-rotácia, žiadny carry. Pritom robíš barbell bent-over row a RDL — dva cviky, ktoré predpokladajú silný trup.</li>
+      <li style="margin-bottom:10px"><strong>Diera č. 3 — zadný deltoid a deň ramien.</strong> Zadný deltoid nemá ani jednu priamu sériu. Deň ramien má <span class="num">2</span> cviky a trvá ~20 minút — je to najväčšia nevyužitá kapacita v celom pláne.</li>
+      <li><strong>Čo zmeniť ako prvé (jedna vec, tento týždeň):</strong> prebuduj deň ramien. Pridaj doň cable lateral raise, face pull, seated leg curl a hanging leg raise. Jediným zásahom opravíš zadný deltoid, hamstringy aj core — a deň stále vojde do 50 minút.</li>
+    </ol>
+  </div>
+
+  <div class="note">
+    <b>Ako čítať tento dokument</b>
+    Tier list používa farby súťažných kotúčov: <strong style="color:var(--p25)">červená = 25 kg = S</strong>, modrá 20 = A, žltá 15 = B, zelená 10 = C, sivá 5 = D. Čím ťažší kotúč, tým lepší cvik. Všetky dlhé tabuľky sú zbaliteľné — klikni na nadpis. Stránka je urobená na tlač (Ctrl/Cmd + P) aj do PDF; ťaháky do posilky sú úplne na konci.
+  </div>
+</section>
+
+<!-- ══════════ OBJEM ══════════ -->
+<section id="objem">
+  <div class="sechead"><span class="eyebrow">02 · Objem a rozloženie</span><h2>Koľko sérií kam reálne padá</h2></div>
+
+  <p class="lead">Rátam priame série plnou váhou a nepriame koeficientom 0,5. Za priemer beriem 3,5 série na cvik (tvoje „3–4“). Pri 3 tréningoch týždenne rotuješ 4 dni, takže každý deň vychádza priemerne 0,75× za týždeň — preto sú čísla nižšie.</p>
+
+  <div class="card">
+    <figure>
+      <div class="acclabel" style="margin-bottom:10px">Graf 1 — série na partiu za týždeň pri 4 tréningoch, s odporúčaným pásmom</div>
+      <div id="chart-volume"></div>
+      <div class="legend">
+        <span><i style="background:var(--p20)"></i>4× týždenne</span>
+        <span><i style="background:#9db4cf"></i>3× týždenne</span>
+        <span><i style="background:#cfe3d5"></i>odporúčané pásmo</span>
+      </div>
+      <figcaption>Každý blok = jedna séria. Zelené pásmo v pozadí je odporúčaný rozsah pre hypertrofiu. Modrý stĺpec vľavo od pásma = máš málo, vpravo = máš veľa.</figcaption>
+    </figure>
+  </div>
+
+  <details class="acc" open>
+    <summary>Tabuľka: série na partiu za týždeň <span class="acclabel">3× vs 4×</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Partia</th><th class="n">Priame</th><th class="n">Nepriame ×0,5</th><th class="n">Spolu 4×/týž.</th><th class="n">Spolu 3×/týž.</th><th class="n">Odporúčané</th><th>Stav (4×)</th></tr></thead>
+          <tbody id="voltable"></tbody>
+        </table>
+      </div>
+      <div class="note warn"><b>Čo z toho vypadáva</b>
+      Biceps má <strong>12,3 série</strong> — najviac zo všetkých partií v celom pláne. Hamstringy <strong>3,5</strong>, kvadriceps <strong>7,0</strong>, core <strong>0</strong>. Na chlapa, ktorý chce naberať hmotu, sú prioritne trénované ruky a zanedbané nohy. To je najtypickejší vzorec samouka a zároveň najdrahšia chyba: nohy sú najväčšia svalová hmota v tele a najsilnejší ťahúň celkového rastu aj metabolizmu.</div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Frekvencia zaťaženia partií <span class="acclabel">koľkokrát za týždeň</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Partia</th><th class="n">Teraz (4×/týž.)</th><th class="n">Optimum</th><th>Komentár</th></tr></thead>
+          <tbody>
+            <tr><td>Prsia</td><td class="n">1×</td><td class="n">2×</td><td>Pri 10+ sériách na jeden tréning klesá kvalita posledných sérií. Rozdelenie na 2× týždenne dá lepší stimul pri rovnakom objeme — ale pri 4-dňovej rotácii je 1× akceptovateľné, ak držíš intenzitu.</td></tr>
+            <tr><td>Chrbát</td><td class="n">1×</td><td class="n">2×</td><td>To isté. Chrbát znesie vysokú frekvenciu, regeneruje rýchlo.</td></tr>
+            <tr><td>Bočný deltoid</td><td class="n">1×</td><td class="n">2–3×</td><td>Malý sval, rýchla regenerácia, veľmi dobre reaguje na frekvenciu. Toto je najlacnejší zisk v pláne — pridaj bočné rozpaženie aj do dňa prsníkov.</td></tr>
+            <tr><td>Zadný deltoid</td><td class="n">0×</td><td class="n">2–3×</td><td>Nula priamej práce. Pri 3 tlakových cvikoch na prsia je to priama cesta k dopredu zrotovaným ramenám.</td></tr>
+            <tr><td>Biceps</td><td class="n">1×</td><td class="n">1–2×</td><td>Objem je nad rozsahom, frekvencia v poriadku. Skôr uber cvik než pridaj deň.</td></tr>
+            <tr><td>Triceps</td><td class="n">1× (+ nepriamo 2×)</td><td class="n">2×</td><td>Dva takmer identické cviky v jeden deň. Rozdeľ ich a zmeň jeden na overhead.</td></tr>
+            <tr><td>Kvadriceps</td><td class="n">1×</td><td class="n">2×</td><td>Pri 7 sériách raz týždenne je stimul podprahový pre niekoho, kto chce naberať.</td></tr>
+            <tr><td>Hamstringy</td><td class="n">1×</td><td class="n">2×</td><td>Najhoršie postihnutá partia. Riešenie: druhý dotyk (leg curl) v deň ramien.</td></tr>
+            <tr><td>Lýtka</td><td class="n">1×</td><td class="n">2–3×</td><td>Lýtka majú vysoký podiel pomalých vlákien a znesú vysokú frekvenciu. Seated calf raise trénuje soleus, gastrocnemius nemáš vôbec.</td></tr>
+            <tr><td>Core</td><td class="n">0×</td><td class="n">2–3×</td><td>Nula. Riešenie je zadarmo — do páuz medzi sériami.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <div class="note bad"><b>Poznámka k dĺžke tréningu</b>
+  V dni chrbta máš vypísaných 6 cvikov. Pri 3–4 sériách je to 18–24 sérií a to sa do 60 minút nezmestí. Beriem to tak, že vertical row skutočne <em>nahrádza</em> lat pulldown (ako píšeš), takže reálne robíš 5 cvikov. Ak ich robíš všetkých 6, tréning ti trvá 75+ minút a posledné 2 cviky sú už len únava bez stimulu — to je samostatný problém.</div>
+</section>
+
+<!-- ══════════ PODREGIÓNY ══════════ -->
+<section id="podregiony">
+  <div class="sechead"><span class="eyebrow">03 · Podregióny</span><h2>Nie partie, ale ich časti</h2></div>
+
+  <p class="lead">Sval nie je jedna jednotka. Rôzne hlavy a oblasti majú rôznu funkciu a rôznu dĺžku pri rôznych cvikoch — a to, čo nie je zaťažené v natiahnutí, nerastie. Tu je rozpad na 24 podregiónov.</p>
+
+  <div class="card">
+    <figure>
+      <div class="acclabel" style="margin-bottom:10px">Graf 2 — pokrytie svalových partií: súčasný vs optimalizovaný plán</div>
+      <div id="chart-radar"></div>
+      <div class="legend">
+        <span><i style="background:var(--p05)"></i>súčasný plán</span>
+        <span><i style="background:var(--p25)"></i>optimalizovaný plán</span>
+      </div>
+      <figcaption>Hodnotenie 0–10 kombinuje tri veci: či je objem v odporúčanom pásme, či sú pokryté všetky podregióny partie a akej kvality sú vybrané cviky. Prsia a chrbát sa takmer nemenia — tam už máš dobrý plán. Rozdiel je v nohách, ramenách a trupe.</figcaption>
+    </figure>
+  </div>
+
+  <details class="acc" open>
+    <summary>Horná časť tela <span class="acclabel">14 podregiónov</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Podregión</th><th>Stav</th><th>Čo ho pokrýva / prečo chýba</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Horné prsia</strong> (pars clavicularis)</td><td><span class="tag t-ok">pokryté</span></td><td>DB incline press + low cable crossover (zdola nahor). Dokonca <em>nadpokryté</em> — dva cviky na tú istú oblasť.</td></tr>
+            <tr><td><strong>Stredné prsia</strong> (pars sternalis)</td><td><span class="tag t-ok">pokryté</span></td><td>Machine fly. V poriadku, ale chýba ťažký horizontálny tlak, kde by si mohol progresívne pridávať váhu.</td></tr>
+            <tr><td><strong>Dolné prsia</strong> (pars abdominalis)</td><td><span class="tag t-part">slabo</span></td><td>Žiadny decline ani dip. Malá diera — dolné vlákna sa čiastočne zapájajú pri machine fly. Nízka priorita.</td></tr>
+            <tr><td><strong>Predný deltoid</strong></td><td><span class="tag t-ok">pokryté</span></td><td>DB shoulder press + incline press. 5,3 série, dosť.</td></tr>
+            <tr><td><strong>Bočný deltoid</strong></td><td><span class="tag t-part">slabo</span></td><td>Iba DB lateral raise, 3,5 série priamo. Na viditeľnú šírku ramien treba 10–20. Navyše jednoručka dáva takmer nulový odpor v natiahnutí (na začiatku pohybu) — chýba káblová verzia.</td></tr>
+            <tr><td><strong>Zadný deltoid</strong></td><td><span class="tag t-no">vôbec</span></td><td>Nula priamych sérií. Iba nepriamo z bent-over row. Pri troch tlakových cvikoch na prsia je to nerovnováha, ktorá sa po rokoch prejaví na držaní tela a zdraví ramena.</td></tr>
+            <tr><td><strong>Triceps — dlhá hlava</strong></td><td><span class="tag t-no">vôbec</span></td><td>Toto je najväčšia diera na rukách. Dlhá hlava prechádza cez ramenný kĺb, takže sa naťahuje len keď máš <em>rameno nad hlavou</em>. Oba tvoje cviky (pushdown + EZ pushdown) máš lakeť pri tele — dlhá hlava je celý čas skrátená. Pritom je to najväčšia z troch hláv.</td></tr>
+            <tr><td><strong>Triceps — bočná hlava</strong></td><td><span class="tag t-ok">pokryté</span></td><td>Pushdown, dobre.</td></tr>
+            <tr><td><strong>Triceps — mediálna hlava</strong></td><td><span class="tag t-ok">pokryté</span></td><td>Pushdown, hlavne v posledných opakovaniach.</td></tr>
+            <tr><td><strong>Biceps — dlhá hlava</strong></td><td><span class="tag t-part">slabo</span></td><td>Preacher curl má rameno <em>pred</em> telom, čím dlhú hlavu skracuje. Hammer curl ju zaťaží čiastočne. Chýba cvik s ramenom <em>za</em> telom (incline curl).</td></tr>
+            <tr><td><strong>Biceps — krátka hlava</strong></td><td><span class="tag t-ok">pokryté</span></td><td>Preacher curl je na to výborný. Nadpokryté vzhľadom na celkový objem.</td></tr>
+            <tr><td><strong>Brachialis / brachioradialis</strong></td><td><span class="tag t-ok">pokryté</span></td><td>Hammer curl.</td></tr>
+            <tr><td><strong>Latissimus</strong></td><td><span class="tag t-ok">pokryté</span></td><td>3 ťahy, 10,5 série. Dobre. Jediná výhrada: fixná dráha stroja obmedzuje pohyb lopatky a plné natiahnutie hore.</td></tr>
+            <tr><td><strong>Medzilopatkové svaly</strong> (rhomboidy, stredný trapéz)</td><td><span class="tag t-ok">pokryté</span></td><td>Barbell bent-over row + single-arm cable row. 7 sérií, v poriadku.</td></tr>
+            <tr><td><strong>Horný trapéz</strong></td><td><span class="tag t-part">slabo</span></td><td>Iba nepriamo. Nie je to kozmetika — horný trapéz drží krčnú chrbticu a lopatku; jeho slabosť je bežná príčina bolesti krku pri sedavej práci.</td></tr>
+            <tr><td><strong>Dolný trapéz</strong></td><td><span class="tag t-part">slabo</span></td><td>Trochu z lat pulldownu. Chýba cielená depresia lopatky (face pull, prone Y).</td></tr>
+            <tr><td><strong>Rotátorová manžeta</strong></td><td><span class="tag t-no">vôbec</span></td><td>Žiadna externá rotácia. Pri 3 tlakoch na prsia a 0 zadných deltoidoch je to najrizikovejšia kombinácia v pláne z dlhodobého hľadiska.</td></tr>
+            <tr><td><strong>Predlaktia / úchop</strong></td><td><span class="tag t-part">slabo</span></td><td>2,6 série nepriamo. Stroje a preacher curl majú takmer nulovú nároku na úchop.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary>Dolná časť tela a trup <span class="acclabel">10 podregiónov</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Podregión</th><th>Stav</th><th>Čo ho pokrýva / prečo chýba</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Kvadriceps — vasti</strong> (lateralis, medialis, intermedius)</td><td><span class="tag t-part">slabo</span></td><td>Leg extension + leg press, spolu 7 sérií. Chýba hlboká flexia kolena pod záťažou (drep, hack squat), kde vasti pracujú v najväčšom natiahnutí.</td></tr>
+            <tr><td><strong>Rectus femoris</strong></td><td><span class="tag t-part">slabo</span></td><td>Prechádza cez bedro aj koleno. V sede (leg extension aj leg press) je na bedre skrátený, takže dostáva len časť stimulu. Potrebuje prácu s <em>vystretým bedrom</em> — výpady, split squat, reverse Nordic.</td></tr>
+            <tr><td><strong>Hamstringy — biceps femoris (dlhá hlava)</strong></td><td><span class="tag t-part">slabo</span></td><td>RDL ju zaťaží cez bedro, ale iba 3,5 série. Krátka hlava bicepsu femoris ide <em>len</em> cez koleno — tú RDL nezasiahne vôbec.</td></tr>
+            <tr><td><strong>Hamstringy — semitendinosus / semimembranosus</strong></td><td><span class="tag t-no">vôbec</span></td><td>Reagujú výrazne silnejšie na <em>knee flexion</em> (leg curl) než na hip hinge. V pláne nemáš ani jeden cvik s ohybom v kolene. Toto je najväčšia štrukturálna diera celého plánu.</td></tr>
+            <tr><td><strong>Gluteus maximus</strong></td><td><span class="tag t-part">slabo</span></td><td>RDL + leg press. 5,3 série a žiadna práca v skrátenej pozícii (hip thrust) ani v hlbokej flexii bedra pod záťažou.</td></tr>
+            <tr><td><strong>Gluteus medius / minimus</strong></td><td><span class="tag t-no">vôbec</span></td><td>Stabilizátory panvy pri chôdzi a stoji na jednej nohe. Jednonožný leg press ich nezapája — sedíš, panva je opretá. Zásadné pre bedrá a koleno v päťdesiatke.</td></tr>
+            <tr><td><strong>Gastrocnemius</strong></td><td><span class="tag t-no">vôbec</span></td><td>Prechádza cez koleno. V sede (seated calf raise) je skrátený a takmer nepracuje. Potrebuje výpony <em>v stoji</em>.</td></tr>
+            <tr><td><strong>Soleus</strong></td><td><span class="tag t-ok">pokryté</span></td><td>Seated calf raise je presne na to. Jediný správne pokrytý podregión na lýtku.</td></tr>
+            <tr><td><strong>Vzpriamovače chrbtice</strong></td><td><span class="tag t-part">slabo</span></td><td>Nepriamo z bent-over row a Smith RDL. 3,5 série. Dostávajú <em>únavu</em>, ale nie cielený tréning — to je najhorší možný pomer.</td></tr>
+            <tr><td><strong>Core — anti-extension</strong> (priamy brušný sval)</td><td><span class="tag t-no">vôbec</span></td><td>Nula.</td></tr>
+            <tr><td><strong>Core — anti-rotácia / šikmé svaly</strong></td><td><span class="tag t-no">vôbec</span></td><td>Nula. Šikmé svaly nedostávajú z tvojho plánu vôbec nič, ani nepriamo.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ POHYBOVÉ VZORY ══════════ -->
+<section id="vzory">
+  <div class="sechead"><span class="eyebrow">04 · Pohybové vzory</span><h2>Čo tvoje telo vie a čo nevie</h2></div>
+
+  <p class="lead">Partie sú kozmetika, vzory sú funkcia. Toto je pohľad na to, čo si tvoja nervová sústava naozaj vytrénuje.</p>
+
+  <div class="card">
+    <figure>
+      <div class="acclabel" style="margin-bottom:10px">Graf 4 — pokrytie pohybových vzorov v %</div>
+      <div id="chart-patterns"></div>
+      <div class="legend">
+        <span><i style="background:var(--p05)"></i>súčasný plán</span>
+        <span><i style="background:var(--p25)"></i>optimalizovaný plán</span>
+      </div>
+    </figure>
+  </div>
+
+  <details class="acc">
+    <summary>Rozpis podľa vzoru <span class="acclabel">čo mám / čo chýba</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Vzor</th><th>Stav</th><th>Čo to pokrýva</th><th>Čo chýba</th></tr></thead>
+          <tbody>
+            <tr><td>Horizontálny tlak</td><td><span class="tag t-part">čiastočne</span></td><td>DB incline press (30–45°), machine fly</td><td>Čistý horizontálny ťažký tlak, kde sa dá jednoducho pridávať váha týždeň po týždni</td></tr>
+            <tr><td>Vertikálny tlak</td><td><span class="tag t-ok">pokryté</span></td><td>DB seated shoulder press</td><td>Nič podstatné</td></tr>
+            <tr><td>Horizontálny ťah</td><td><span class="tag t-ok">pokryté</span></td><td>Barbell bent-over row, single-arm cable row</td><td>Nič podstatné</td></tr>
+            <tr><td>Vertikálny ťah</td><td><span class="tag t-part">čiastočne</span></td><td>Fixed lat pulldown, vertical row (stroj)</td><td>Voľná dráha — pull-up / chin-up alebo pulldown s káblom. Fixná dráha obmedzuje pohyb lopatky.</td></tr>
+            <tr><td>Hip hinge</td><td><span class="tag t-part">čiastočne</span></td><td>RDL na Smith machine</td><td>Voľná činka. Smith má zvislú dráhu, hinge má oblúk — buď ťaháš tyč po stehnách, alebo sa musíš predkloniť dopredu, aby si dráhu „obišiel“. Oboje ti kazí vzor.</td></tr>
+            <tr><td>Drep / knee extension</td><td><span class="tag t-part">čiastočne</span></td><td>Leg extension, jednonožný leg press</td><td>Skutočný drepový vzor v stoji s axiálnym zaťažením. Leg press ti nedá ani hlbokú flexiu bedra pod záťažou, ani nič pre kosti a trup.</td></tr>
+            <tr><td>Knee flexion</td><td><span class="tag t-no">chýba úplne</span></td><td>—</td><td>Leg curl (sediaci alebo ležiaci) alebo Nordic curl. Absolútna nula.</td></tr>
+            <tr><td>Jednostranná práca v stoji</td><td><span class="tag t-no">chýba úplne</span></td><td>Single-arm cable row, jednonožný leg press (ale <em>v sede</em>)</td><td>Split squat, výpad, step-up, single-leg RDL. Jednonožný leg press <strong>nie je</strong> jednostranná práca v zmysle rovnováhy — panva je opretá o sedadlo a stabilizátory bedra nerobia nič.</td></tr>
+            <tr><td>Core anti-extension</td><td><span class="tag t-no">chýba úplne</span></td><td>—</td><td>Ab wheel, dead bug, hanging leg raise, cable crunch</td></tr>
+            <tr><td>Core anti-rotácia</td><td><span class="tag t-no">chýba úplne</span></td><td>—</td><td>Pallof press, suitcase carry, single-arm práca v stoji</td></tr>
+            <tr><td>Loaded carry / úchop</td><td><span class="tag t-no">chýba úplne</span></td><td>—</td><td>Farmer's carry, dead hang. Zároveň jediný vzor, ktorý ti naraz rieši úchop, trapéz, trup, kosti aj kardio.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ HEATMAPA + POMERY ══════════ -->
+<section id="heatmapa">
+  <div class="sechead"><span class="eyebrow">05 · Heatmapa a pomery</span><h2>Kde presne sú diery</h2></div>
+
+  <div class="card">
+    <figure>
+      <div class="acclabel" style="margin-bottom:10px">Graf 3 — heatmapa: cvik × svalová partia (súčasný plán)</div>
+      <div class="tscroll"><div id="chart-heat"></div></div>
+      <div class="legend">
+        <span><i style="background:var(--p25)"></i>primárne zapojenie</span>
+        <span><i style="background:#f0c4bd"></i>sekundárne</span>
+        <span><i style="background:#eef0f2"></i>nulové</span>
+      </div>
+      <figcaption>Prázdne stĺpce sú diery v pláne. Pozri sa na stĺpce <strong>Zadný D.</strong>, <strong>Hamstr.</strong>, <strong>Core</strong> a <strong>Úchop</strong> — sú takmer celé sivé.</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <figure>
+      <div class="acclabel" style="margin-bottom:10px">Graf 5 — kľúčové pomery: teraz, po zmene a ideál</div>
+      <div id="chart-ratios"></div>
+      <figcaption>Čierna zvislá čiara označuje ideálny pomer.</figcaption>
+    </figure>
+  </div>
+
+  <div class="grid2">
+    <div class="note warn"><b>Horná vs dolná časť tela</b>
+    Teraz <strong>75 : 25</strong>. Pri 4-dňovej rotácii s jedným dňom nôh to inak nejde. Riešenie nie je pridať piaty deň, ale dať druhý dotyk nôh do dňa ramien, ktorý je aj tak poloprázdny. Po zmene <strong>66 : 34</strong>, čo je pri tomto splite realistické maximum.</div>
+    <div class="note warn"><b>Kvadriceps vs hamstringy</b>
+    Teraz <strong>2 : 1</strong> v prospech kvadricepsu. Pomer sily hamstringov ku kvadricepsu (H:Q) pod ~0,6 sa spája s vyšším rizikom poranenia kolena a zadného stehna — a ty ideš na hokej, kde je práve toto typické zranenie. Po zmene <strong>≈ 1 : 1,2</strong>, čo je počas dobiehania deficitu správne; o 2–3 mesiace pridaj sériu na kvadriceps.</div>
+  </div>
+</section>
+
+<!-- ══════════ TIER LIST ══════════ -->
+<section id="tier">
+  <div class="sechead"><span class="eyebrow">06 · Tier list</span><h2>Každý cvik, hodnotený v rámci svojej partie</h2></div>
+
+  <p class="lead">Hodnotenie je <strong>vnútri partie</strong>, nie naprieč telom — S-tier cvik na lýtka nie je „lepší“ ako A-tier cvik na chrbát. Farby zodpovedajú súťažným kotúčom: červená 25 kg je najťažšia, teda najlepšia.</p>
+
+  <details class="acc" open>
+    <summary>Podľa čoho hodnotím <span class="acclabel">8 kritérií</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>Kritérium</th><th>Prečo na ňom záleží</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Zaťaženie v natiahnutí</strong></td><td>Najsilnejší jednotlivý faktor. Sval, ktorý dostane najväčší odpor vtedy, keď je najviac natiahnutý, rastie viac než ten istý sval trénovaný v skrátenej polohe. Preto je incline curl lepší než concentration curl a seated leg curl lepší než ležiaci.</td></tr>
+            <tr><td><strong>Rozsah pohybu</strong></td><td>Plný ROM &gt; skrátený ROM pri rovnakej záťaži. Stroje s fixnou dráhou často ROM orezávajú.</td></tr>
+            <tr><td><strong>Krivka odporu</strong></td><td>Sedí odpor stroja na krivku sily svalu? Jednoručkové bočné rozpaženie má na začiatku pohybu takmer nulový odpor (gravitácia ťahá rovnobežne s ramenom) — kábel ho má od prvého centimetra.</td></tr>
+            <tr><td><strong>Stabilita</strong></td><td>Koľko energie ide do balansovania namiesto do cieľového svalu. Stroj = viac stimulu do svalu; voľná váha = viac prenosu do reálneho pohybu a stabilizátorov.</td></tr>
+            <tr><td><strong>Ľahkosť progresívneho preťaženia</strong></td><td>Vieš pridať 2,5 kg? Cviky, kde vieš merateľne rásť, vyhrávajú, lebo progresia je motor rastu.</td></tr>
+            <tr><td><strong>Pomer stimul / únava</strong></td><td>Koľko systémovej únavy stojí jednotka rastu. Barbell row je skvelý na chrbát, ale zaplatíš vzpriamovačmi a trupom.</td></tr>
+            <tr><td><strong>Šetrnosť ku kĺbom</strong></td><td>Dlhodobo. Cvik, ktorý ťa o tri roky vyradí, má hodnotu nula.</td></tr>
+            <tr><td><strong>Náročnosť naučenia</strong></td><td>Kritické práve u teba — techniku si sa učil sám. Cvik, ktorý sa dá pokaziť dvadsiatimi spôsobmi, dostáva zrážku.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <div class="tierlegend">
+    <div class="bS"><b>S</b> Najlepší dostupný cvik na partiu. Zaťaženie v natiahnutí, plný ROM, ľahká progresia, výborný pomer stimul/únava.</div>
+    <div class="bA"><b>A</b> Veľmi dobrý, patrí do každého plánu. Jeden malý kompromis (stabilita, krivka odporu alebo únava).</div>
+    <div class="bB"><b>B</b> Použiteľný doplnok. Chýba mu jedna dôležitá vlastnosť — typicky napätie v natiahnutí.</div>
+    <div class="bC"><b>C</b> Funguje, ale zaberá miesto lepšiemu cviku. Duplicita alebo zlá krivka odporu.</div>
+    <div class="bD"><b>D</b> Neefektívny alebo rizikový vzhľadom na prínos. <em>V tvojom pláne žiadny takýto nie je.</em></div>
+  </div>
+
+  <div id="tierboard" style="margin-bottom:16px"></div>
+  <p class="small" style="margin-bottom:20px">Kartičky s červeným rámom a štítkom <span class="badge b-new">Nové</span> sú odporúčané doplnky, ktoré v pláne zatiaľ nemáš. Preškrtnuté sú tie, ktoré navrhujem vypustiť.</p>
+
+  <details class="acc">
+    <summary>Detailná tabuľka — tvoje súčasné cviky <span class="acclabel">18 cvikov</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th>Partia</th><th class="n">Tier</th><th>Prečo tento tier</th><th>Na čo si dať pozor</th></tr></thead>
+          <tbody id="tiertable-current"></tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Detailná tabuľka — odporúčané nové cviky <span class="acclabel">27 cvikov</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th>Partia</th><th class="n">Tier</th><th>Prečo tento tier</th><th>Na čo si dať pozor</th></tr></thead>
+          <tbody id="tiertable-new"></tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ DIERY + ODPORÚČANIA ══════════ -->
+<section id="diery">
+  <div class="sechead"><span class="eyebrow">07 · Zanedbané partie</span><h2>Poradie podľa toho, koľko ťa to stojí</h2></div>
+
+  <p class="lead">Zoradené podľa dôležitosti. Pri každej diere je aj to, <em>kam</em> cvik zaradiť a <em>čo</em> zaň vypustiť, aby tréning nebol dlhší.</p>
+
+  <details class="acc" open>
+    <summary><span class="num" style="color:var(--p25)">01</span> &nbsp;Knee flexion — hamstringy <span class="acclabel">Diera č. 1</span></summary>
+    <div class="accbody">
+      <p><strong>Prečo je to najväčší problém:</strong> RDL zaťažuje hamstringy cez bedro, čím trénuje hlavne dlhé hlavy. Semitendinosus, semimembranosus a krátka hlava bicepsu femoris reagujú výrazne silnejšie na ohyb v kolene. Tie máš na nule. Zároveň sú hamstringy s 3,5 sériami najmenej trénovanou veľkou partiou celého tela — a nerovnováha voči kvadricepsu 2:1 je rizikový faktor pre koleno aj natrhnutie zadného stehna.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th class="n">Tier</th><th>Prečo</th><th>Kam ho dať</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Seated leg curl</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>V sede je bedro ohnuté, čím sú hamstringy predĺžené a odpor ich zasiahne v najväčšom natiahnutí. Meria sa to: sediaci leg curl dáva pri rovnakom objeme väčší prírastok než ležiaci.</td><td><strong>Deň nôh, 3. cvik</strong> (po RDL) a <strong>deň ramien, 5. cvik</strong>. Dvakrát týždenne — bez toho sa z 3,5 na 9 sérií nedostaneš.</td></tr>
+            <tr><td><strong>Lying leg curl</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>To isté, ale s vystretým bedrom sú hamstringy skrátené, takže menej záťaže v natiahnutí. Stále výborný cvik.</td><td>Náhrada, ak je sediaci obsadený.</td></tr>
+            <tr><td><strong>Nordic curl / GHR</strong></td><td class="n"><span class="tiercell tB">B</span></td><td>Brutálna excentrická práca, výborná prevencia zranení. Zrážka za to, že sa ťažko dávkuje a progresívne preťažuje — buď to dáš, alebo nie.</td><td>Voliteľne 2 série na konci dňa nôh, keď už budeš mať základ.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note good"><b>Čo za to vypustiť</b>Nič. Deň nôh máš len 4 cviky — je tam miesto. Deň ramien má 2 cviky, tam je miesta ešte viac.</div>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary><span class="num" style="color:var(--p25)">02</span> &nbsp;Core — anti-extension a anti-rotácia <span class="acclabel">Diera č. 2</span></summary>
+    <div class="accbody">
+      <p><strong>Prečo:</strong> nula sérií. Trup je to, čo prenáša silu medzi nohami a rukami — pri barbell row a RDL je limitujúcim článkom. Z hľadiska longevity je slabý trup priama cesta k bolestiam driekovej chrbtice po štyridsiatke.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th class="n">Tier</th><th>Prečo</th><th>Kam ho dať</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Ab wheel rollout</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Anti-extension so záťažou práve v natiahnutí, presne tam, kde brušný sval rastie. Progresia je plynulá (kolená → stoj, zväčšovanie rozsahu).</td><td><strong>Do pauzy medzi sériami</strong> v deň prsníkov alebo chrbta. Nestojí ťa to ani minútu navyše.</td></tr>
+            <tr><td><strong>Hanging leg raise</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Rieši naraz brucho, úchop a dekompresiu chrbtice. Dva ciele jedným cvikom.</td><td><strong>Deň ramien, 7. cvik</strong> (na záver).</td></tr>
+            <tr><td><strong>Pallof press</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Jediný rozumný anti-rotačný cvik, ktorý sa dá dávkovať. Šikmé svaly nedostanú z tvojho plánu inak nič.</td><td><strong>Do pauzy medzi sériami</strong> alebo 2 série na konci dňa chrbta.</td></tr>
+            <tr><td><strong>Cable crunch</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Jediný brušný cvik, kde vieš týždeň po týždni pridávať kilá — a preto jediný, ktorý sa dá skutočne progresívne preťažovať.</td><td>Alternatíva k ab wheelu, ak nemáš koliesko.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note good"><b>Čo za to vypustiť</b>Nič — core rob v pauzách medzi sériami cvikov, ktoré s ním nesúperia (tlaky, biceps, lýtka). Pauza 2 minúty je aj tak mŕtvy čas. Toto je jediný spôsob, ako do 45–60 minút vôbec dostaneš všetko.</div>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary><span class="num" style="color:var(--p25)">03</span> &nbsp;Zadný deltoid a externá rotácia <span class="acclabel">Diera č. 3</span></summary>
+    <div class="accbody">
+      <p><strong>Prečo:</strong> 3 tlakové cviky na prsia týždenne a nula priamych sérií na zadný deltoid. Vizuálne to obmedzuje šírku ramien z profilu, funkčne to vedie k dopredu zrotovaným ramenám a dlhodobo k dráždeniu ramenného kĺbu.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th class="n">Tier</th><th>Prečo</th><th>Kam ho dať</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Reverse pec deck</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Konštantný odpor po celej dráhe, nulové nároky na stabilitu, nedá sa pokaziť švihom. Pre samouka ideálne.</td><td><strong>Deň prsníkov, 6. cvik</strong> — hneď po tlakoch, ako protiváha.</td></tr>
+            <tr><td><strong>Face pull</strong> (kábel, vysoko)</td><td class="n"><span class="tiercell tA">A</span></td><td>Zadný deltoid + dolný trapéz + externá rotácia v jednom. Najlepší jediný cvik na „zdravie ramena“, ak si môžeš vybrať len jeden.</td><td><strong>Deň ramien, 4. cvik.</strong></td></tr>
+            <tr><td><strong>Cable rear delt fly</strong> (skrížený)</td><td class="n"><span class="tiercell tA">A</span></td><td>Väčší rozsah než pec deck, silnejšie napätie v natiahnutí. Zrážka len za setup.</td><td>Náhrada za reverse pec deck.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note good"><b>Čo za to vypustiť</b>V deň prsníkov vypadne <strong>low cable crossover</strong> (C tier, duplicita horných prsníkov s incline pressom) — miesto neho ide reverse pec deck. Čistá výmena, deň sa nepredĺži.</div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary><span class="num" style="color:var(--p20)">04</span> &nbsp;Drepový vzor a axiálne zaťaženie <span class="acclabel">Diera č. 4</span></summary>
+    <div class="accbody">
+      <p><strong>Prečo:</strong> leg press a leg extension sú oba v sede a oba bez zaťaženia chrbtice. Chýba ti hlboká flexia bedra a kolena pod záťažou — najsilnejší stimul pre kvadriceps aj gluteus — a zároveň jediný typ zaťaženia, ktorý reálne pôsobí na hustotu kostí panvy a chrbtice.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th class="n">Tier</th><th>Prečo</th><th>Kam ho dať</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Hack squat</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Kvadriceps v maximálnom natiahnutí, fixná dráha znamená, že sa dá ísť blízko zlyhania bez rizika, a naučí sa za jeden tréning. Pre samouka lepší štart než veľká činka.</td><td><strong>Deň nôh, 1. cvik.</strong></td></tr>
+            <tr><td><strong>Smith machine squat</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Ak hack squat nemáte. Zvislá dráha tu na rozdiel od RDL neprekáža — drep je prevažne zvislý pohyb.</td><td>Náhrada za hack squat.</td></tr>
+            <tr><td><strong>Barbell back squat</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Najlepší z hľadiska longevity (axiálne zaťaženie chrbtice = hustota kostí) a celkovej sily. Zrážka za náročnosť naučenia — u samouka to <em>musí</em> ísť postupne a s videom zboku.</td><td><strong>Cieľ na 3–6 mesiacov.</strong> Nauč sa ho s prázdnou tyčou v rozcvičke, kým hlavnú prácu robíš na hack squate.</td></tr>
+            <tr><td><strong>Bulgarian split squat</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Jednostranná práca v stoji: kvadriceps + gluteus + gluteus medius + rovnováha naraz. Presne to, čo jednonožný leg press <em>nedáva</em>.</td><td><strong>Deň nôh, 4. cvik</strong> — nahrádza jednonožný leg press.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note warn"><b>Čo za to vypustiť</b><strong>Jednonožný leg press</strong> vypadne a nahradí ho Bulgarian split squat. Hack squat je nový 1. cvik. Leg extension klesne na 2 série a presunie sa dozadu ako izolácia.</div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary><span class="num" style="color:var(--p20)">05</span> &nbsp;Dlhá hlava tricepsu <span class="acclabel">Diera č. 5</span></summary>
+    <div class="accbody">
+      <p><strong>Prečo:</strong> máš dva cviky, ktoré sú v podstate ten istý pohyb — cable pushdown a EZ bar pushdown na tom istom stroji, len s iným madlom. Oba majú lakeť pri tele, takže dlhá hlava (najväčšia z troch) je celý čas skrátená a nedostane napätie v natiahnutí. Sedem sérií tricepsu, z toho nula na najväčšiu hlavu.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th class="n">Tier</th><th>Prečo</th><th>Kam ho dať</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Overhead cable extension</strong> (lano, chrbtom k stroju)</td><td class="n"><span class="tiercell tS">S</span></td><td>Rameno nad hlavou = dlhá hlava natiahnutá + kábel dáva napätie práve v tejto pozícii. Kombinácia, ktorú nemá žiadny iný tricepsový cvik.</td><td><strong>Deň prsníkov, 4. cvik</strong> — nahrádza EZ bar pushdown.</td></tr>
+            <tr><td><strong>EZ bar skullcrusher</strong> (za hlavu, nie na čelo)</td><td class="n"><span class="tiercell tA">A</span></td><td>To isté, s voľnou váhou. Zrážka za to, že v hornej časti pohybu odpor mizne a za dráždenie lakťov u niektorých ľudí.</td><td>Náhrada za overhead cable.</td></tr>
+            <tr><td><strong>Dips</strong></td><td class="n"><span class="tiercell tB">B</span></td><td>Ťažký tlak, ktorý sa dá dobre preťažovať. Zrážka: dlhá hlava opäť pri tele, a v hlbokej pozícii zaťažuje predné rameno.</td><td>Voliteľne miesto machine chest pressu.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note good"><b>Čo za to vypustiť</b><strong>EZ bar pushdown</strong> — je to duplicita. Čistá výmena 1:1.</div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary><span class="num" style="color:var(--p15)">06</span> &nbsp;Gastrocnemius a sila úchopu <span class="acclabel">Diery č. 6–7</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th class="n">Tier</th><th>Prečo</th><th>Kam ho dať</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Standing calf raise</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Gastrocnemius ide cez koleno — v stoji je natiahnutý a pracuje. V sede prakticky vypadne. Máš teda natrénovanú presne polovicu lýtka.</td><td><strong>Deň nôh, 6. cvik.</strong> Seated calf raise sa presúva do páuz v deň ramien.</td></tr>
+            <tr><td><strong>Farmer's carry</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Úchop + horný trapéz + trup + vzpriamovače + axiálne zaťaženie kostí + trochu kardia, za 3 minúty. Najvyšší pomer prínos/čas v celom pláne.</td><td><strong>Deň chrbta, posledný cvik.</strong> 2 × 30–40 m s najťažšími jednoručkami, ktoré udržíš.</td></tr>
+            <tr><td><strong>Dead hang</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Úchop + dekompresia chrbtice + mobilita ramena naraz. Zadarmo.</td><td>2 × maximum na koniec ktoréhokoľvek tréningu.</td></tr>
+            <tr><td><strong>DB shrug</strong></td><td class="n"><span class="tiercell tB">B</span></td><td>Horný trapéz. Zrážka za malý rozsah pohybu a za to, že carry dá podobný efekt plus ďalších päť vecí.</td><td><strong>Deň chrbta, 4. cvik.</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary><span class="num" style="color:var(--p15)">07</span> &nbsp;Bočný deltoid, dolné prsia, dlhá hlava bicepsu <span class="acclabel">Menšie diery</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th class="n">Tier</th><th>Prečo</th><th>Kam ho dať</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cable lateral raise</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Kábel dáva odpor už od spodnej polohy, kde jednoručka nedáva takmer nič. Iná krivka odporu než DB verzia — preto sa oplatí mať oba, nie je to duplicita.</td><td><strong>Deň ramien, 3. cvik.</strong></td></tr>
+            <tr><td><strong>Machine chest press</strong> alebo <strong>flat DB press</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Ťažký horizontálny tlak s jednoduchou progresiou. Doplní stredné a dolné prsia, ktoré incline + low crossover nechávajú bokom.</td><td><strong>Deň prsníkov, 2. cvik.</strong></td></tr>
+            <tr><td><strong>Incline DB curl</strong></td><td class="n"><span class="tiercell tS">S</span></td><td>Rameno za telom = dlhá hlava bicepsu maximálne natiahnutá pod záťažou. Preacher robí presný opak.</td><td>Voliteľná náhrada za preacher curl, ak chceš na bicepse ešte niečo zlepšiť. Objem už pridávať netreba.</td></tr>
+            <tr><td><strong>45° back extension</strong></td><td class="n"><span class="tiercell tA">A</span></td><td>Gluteus + hamstringy + vzpriamovače v jednom, s minimálnou systémovou únavou. Priamy tréning driekovej chrbtice namiesto jej púheho unavovania.</td><td><strong>Deň ramien, 6. cvik</strong> (alebo hip thrust, ak ide viac o gluteus).</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ OPTIMALIZOVANÝ PLÁN ══════════ -->
+<section id="plan">
+  <div class="sechead"><span class="eyebrow">08 · Optimalizovaný plán</span><h2>Štyri dni, rovnaký čas, žiadne diery</h2></div>
+
+  <p class="lead">Kostra ostáva tvoja — rotuješ štyri dni. Zmenila sa jedna vec zásadne: <strong>deň ramien už nie je poloprázdny.</strong> Doplnil som doň druhý dotyk hamstringov, zadný deltoid a core, čím sa opravili tri najväčšie diery bez pridania piateho tréningu.</p>
+
+  <div class="note"><b>Ako čítať stĺpec RIR</b>
+  RIR = reps in reserve, koľko opakovaní by si ešte zvládol, keby si musel. RIR 2 = mohol si spraviť ešte dve. RIR 0 = zlyhanie. Na ťažké viackĺbové cviky choď RIR 1–2, na izolácie RIR 0–1 — tam je zlyhanie lacné a bezpečné. Nikdy nie zlyhanie na barbell row alebo drepe.</p></div>
+
+  <div id="daycards"></div>
+
+  <details class="acc">
+    <summary>Skrátená verzia, keď stihneš len 3 tréningy <span class="acclabel">Push / Pull / Nohy</span></summary>
+    <div class="accbody">
+      <p class="small" style="margin-bottom:14px">Nerotuj 4-dňový split pri 3 tréningoch — každý deň by ti vyšiel priemerne 0,75× týždenne a nohy by si trénoval reálne raz za deväť dní. Prejdi na tri dni a rotuj ich <strong>bez ohľadu na deň v týždni</strong>: A → B → C → A → …</p>
+      <div id="daycards3"></div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Čo presne sa zmenilo oproti pôvodnému plánu <span class="acclabel">súhrn</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Zmena</th><th>Cvik</th><th>Dôvod</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-cut">Von</span></td><td>Low cable crossover</td><td>C tier — duplikuje horné prsia s incline pressom, slabý odpor v natiahnutí, ťažko sa preťažuje</td></tr>
+            <tr><td><span class="badge b-cut">Von</span></td><td>EZ bar pushdown</td><td>C tier — ten istý pohyb ako cable pushdown na tom istom stroji</td></tr>
+            <tr><td><span class="badge b-cut">Von</span></td><td>Vertical row (stroj)</td><td>Duplikuje lat pulldown, fixná dráha, nulová pridaná hodnota</td></tr>
+            <tr><td><span class="badge b-cut">Von</span></td><td>DB alternating biceps curl</td><td>Duplikuje hammer curl, biceps má aj tak najviac objemu v pláne</td></tr>
+            <tr><td><span class="badge b-cut">Von</span></td><td>Jednonožný leg press</td><td>Nahradený Bulgarian split squatom — rovnaká jednonožná záťaž, plus rovnováha, gluteus medius a axiálne zaťaženie</td></tr>
+            <tr><td><span class="badge b-mod">Upravené</span></td><td>Romanian deadlift: Smith → voľná činka</td><td>Smith má zvislú dráhu, hip hinge má oblúk. Buď si dreš tyč o stehná, alebo kompenzuješ predklonom — v oboch prípadoch trénuješ nesprávny vzor</td></tr>
+            <tr><td><span class="badge b-mod">Upravené</span></td><td>Leg extension: 3–4 → 2 série, presunuté dozadu</td><td>Ako izolácia patrí za viackĺbové cviky, nie pred leg press</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Machine chest press / flat DB press</td><td>Ťažký horizontálny tlak s jednoduchou progresiou</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Overhead cable triceps extension</td><td>Jediný spôsob, ako zaťažiť dlhú hlavu tricepsu v natiahnutí</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Reverse pec deck + face pull</td><td>Zadný deltoid z nuly na 6 priamych sérií + externá rotácia</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Cable lateral raise</td><td>Iná krivka odporu než jednoručka — odpor od prvého centimetra</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Seated leg curl, 2× týždenne</td><td>Knee flexion z nuly na 6 sérií — najväčšia štrukturálna diera plánu</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Hack squat</td><td>Drepový vzor, hlboká flexia, kvadriceps v natiahnutí</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Standing calf raise</td><td>Gastrocnemius z nuly</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>45° back extension</td><td>Gluteus + hamstringy + cielený tréning vzpriamovačov namiesto ich unavovania</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>DB shrug + farmer's carry</td><td>Horný trapéz a sila úchopu — prediktor dlhovekosti, v pláne úplne chýbal</td></tr>
+            <tr><td><span class="badge b-new">Nové</span></td><td>Hanging leg raise, Pallof press, ab wheel</td><td>Core z nuly na ~8 sérií, väčšina v pauzách medzi sériami</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <div class="card">
+    <figure>
+      <div class="acclabel" style="margin-bottom:10px">Objem po zmene — pôvodný vs optimalizovaný plán</div>
+      <div id="chart-after"></div>
+      <div class="legend"><span><i style="background:var(--p05)"></i>pôvodný plán</span><span><i style="background:var(--p25)"></i>optimalizovaný</span><span><i style="background:#cfe3d5"></i>odporúčané pásmo</span></div>
+      <figcaption>Pätnásť zo šestnástich partií sa dostane do odporúčaného pásma. Jediná výnimka je <strong>kvadriceps na 9 sériách</strong> — tesne pod spodnou hranicou. Je to vedomý kompromis kvôli času; keď si osvojíš hack squat, pridaj štvrtú sériu a budeš na 10. Zároveň je tých 9 sérií kvalitatívne inde než pôvodných 7 na strojoch v sede.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══════════ PREMENNÉ ══════════ -->
+<section id="premenne">
+  <div class="sechead"><span class="eyebrow">09 · Ostatné premenné</span><h2>Rozcvička, progresia, deload, čas</h2></div>
+
+  <details class="acc" open>
+    <summary>Je 5 minút rozcvičky dosť? <span class="acclabel">Nie tak celkom</span></summary>
+    <div class="accbody">
+      <p><strong>Krátka odpoveď:</strong> 5 minút <em>všeobecnej</em> rozcvičky stačí. Čo ti pravdepodobne chýba, sú <strong>rozohrievacie série pred pracovnými</strong> — a to je pri ťažkých cvikoch dôležitejšie než samotný pás.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Fáza</th><th class="n">Trvanie</th><th>Čo robiť</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1. Všeobecná</strong></td><td class="n">3–4 min</td><td>Bicykel, veslo alebo pás so sklonom, kým sa nezapotíš. Cieľ je zvýšiť teplotu svalu, nič viac.</td></tr>
+            <tr><td><strong>2. Cielená mobilita</strong></td><td class="n">2 min</td><td>Podľa dňa — presný zoznam v sekcii Longevity. <em>Deň prsníkov:</em> hrudná chrbtica + ramená. <em>Deň nôh:</em> členky + bedrá + hlboký drep s vlastnou váhou. <em>Deň chrbta:</em> dead hang 30 s. <em>Deň ramien:</em> krúženie ramenami s gumou.</td></tr>
+            <tr><td><strong>3. Rozohrievacie série</strong><br><span class="small">na prvý cvik dňa</span></td><td class="n">3–4 min</td><td><span class="num">50 %</span> pracovnej váhy × 8 opak. → <span class="num">70 %</span> × 5 → <span class="num">85 %</span> × 3 → prvá pracovná séria. Pauzy krátke, tieto série sa <strong>nepočítajú do objemu</strong> a nikdy nejdú blízko zlyhania.</td></tr>
+            <tr><td><strong>4. Ďalšie cviky</strong></td><td class="n">~1 min</td><td>Jedna ľahká séria (~60 % × 8) pri viackĺbových cvikoch. Pri izoláciách a strojoch stačí urobiť prvú pracovnú sériu o niečo ľahšie.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><b>Prečo to nie je stratený čas</b>Rozohrievacie série nie sú len prevencia. Sú to bezplatné opakovania techniky na cviku, ktorý ideš robiť ťažko — a u samouka je toto najlacnejšia príležitosť opraviť si vzor, kým váha nič neriadi. Rob ich vedome, nie mechanicky.</div>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary>Progresívne preťaženie — konkrétny model <span class="acclabel">dvojitá progresia</span></summary>
+    <div class="accbody">
+      <p>Používaj <strong>dvojitú progresiu</strong>: najprv rastú opakovania, potom váha. Je to jediný model, ktorý nepotrebuje testovať maximá a funguje aj na izolácie a stroje.</p>
+      <ol style="padding-left:20px">
+        <li>Každý cvik má <strong>rozsah opakovaní</strong> (napr. 6–10).</li>
+        <li>Začni váhou, s ktorou dáš spodný okraj rozsahu pri predpísanom RIR.</li>
+        <li>Každý týždeň sa snaž pridať <strong>1 opakovanie v každej sérii</strong>.</li>
+        <li>Keď dáš <strong>horný okraj vo všetkých sériách</strong>, nabudúce pridaj váhu a spadneš späť na spodný okraj.</li>
+      </ol>
+      <div class="tscroll">
+        <table class="narrow">
+          <caption>Príklad — DB incline bench press, 4 série, rozsah 6–10 opakovaní</caption>
+          <thead><tr><th>Týždeň</th><th class="n">Váha</th><th class="n">Opakovania</th><th>Akcia</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="n">30 kg</td><td class="n">8 / 7 / 7 / 6</td><td>drž váhu</td></tr>
+            <tr><td>2</td><td class="n">30 kg</td><td class="n">9 / 8 / 8 / 7</td><td>drž váhu</td></tr>
+            <tr><td>3</td><td class="n">30 kg</td><td class="n">10 / 9 / 9 / 8</td><td>drž váhu</td></tr>
+            <tr><td>4</td><td class="n">30 kg</td><td class="n">10 / 10 / 10 / 10</td><td><strong>pridaj váhu</strong></td></tr>
+            <tr><td>5</td><td class="n">32,5 kg</td><td class="n">7 / 7 / 6 / 6</td><td>cyklus začína odznova</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid2">
+        <div class="note good"><b>Veľkosť skoku</b>Horné telo <strong>+2,5 kg</strong> (jednoručky často +2 kg na kus, čo je veľa — vtedy radšej pridaj sériu alebo spomaľ excentriku). Dolné telo <strong>+5 kg</strong>. Izolácie <strong>+1–2,5 kg</strong> alebo len opakovania.</div>
+        <div class="note warn"><b>Kedy progresia nie je progresia</b>Ak ti pribudlo opakovanie, ale skrátil sa rozsah pohybu alebo pribudol švih, nepribudlo nič. Zapisuj si aj RIR, nielen kilá a opakovania — bez zápisníka je dvojitá progresia nepoužiteľná.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Rozsah opakovaní podľa typu cviku <span class="acclabel">nie univerzálne „8+“</span></summary>
+    <div class="accbody">
+      <p class="small" style="margin-bottom:12px">Objem sa pri hypertrofii dá naberať v rozsahu zhruba 5–30 opakovaní, pokiaľ ideš dostatočne blízko zlyhania. Rozhoduje teda skôr to, <em>ktorý rozsah dá pri ktorom cviku najlepší pomer stimulu k únave</em> — a ako ľahko sa v ňom dá progresívne preťažovať.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Typ cviku</th><th class="n">Opakovania</th><th class="n">RIR</th><th class="n">Pauza</th><th>Príklady z tvojho plánu</th></tr></thead>
+          <tbody>
+            <tr><td>Ťažké viackĺbové s voľnou váhou</td><td class="n">5–8</td><td class="n">1–2</td><td class="n">2–3 min</td><td>Barbell bent-over row, hack squat, DB incline press</td></tr>
+            <tr><td>Viackĺbové na stroji / jednoručky</td><td class="n">8–12</td><td class="n">1–2</td><td class="n">2 min</td><td>Machine chest press, lat pulldown, DB shoulder press</td></tr>
+            <tr><td>Hip hinge</td><td class="n">8–12</td><td class="n">2–3</td><td class="n">2 min</td><td>RDL — nikdy nechoď do zlyhania, technika sa rozpadne skôr než sval</td></tr>
+            <tr><td>Jednokĺbová izolácia</td><td class="n">10–15</td><td class="n">0–1</td><td class="n">75–90 s</td><td>Leg curl, leg extension, pec deck, curly, pushdown</td></tr>
+            <tr><td>Malé svaly s dlhým odporom</td><td class="n">12–20</td><td class="n">0–1</td><td class="n">60–75 s</td><td>Lateral raise, reverse pec deck, face pull, lýtka</td></tr>
+            <tr><td>Core</td><td class="n">8–20</td><td class="n">1–2</td><td class="n">60 s</td><td>Hanging leg raise, ab wheel, cable crunch</td></tr>
+            <tr><td>Carry</td><td class="n">30–40 m</td><td class="n">—</td><td class="n">90 s</td><td>Farmer's carry — meraj vzdialenosť, nie opakovania</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note warn"><b>Prečo nie všade 8+</b>Bočné rozpaženie v 8 opakovaniach znamená váhu, ktorú vyhodíš švihom — bočný deltoid dostane menej než pri 15 opakovaniach s polovičnou váhou. A naopak, barbell row v 15 opakovaniach ťa zloží dýchaním a vzpriamovačmi skôr, než sa unaví chrbát.</div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Deload — kedy a ako <span class="acclabel">každých 6–8 týždňov</span></summary>
+    <div class="accbody">
+      <div class="grid2">
+        <div>
+          <h4 style="margin-bottom:8px">Kedy</h4>
+          <p class="small">Buď plánovane každých <strong>6–8 týždňov</strong>, alebo keď nastane ktorékoľvek z toho:</p>
+          <ul class="small" style="padding-left:18px">
+            <li>Dva tréningy po sebe ti pri rovnakej váhe klesli opakovania.</li>
+            <li>Ráno ťa bolia kĺby (lakte, ramená, kolená), nie svaly.</li>
+            <li>Rozcvička trvá dlhšie, kým sa „rozbehneš“.</li>
+            <li>Zhoršil sa spánok alebo chuť ísť do posilky.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin-bottom:8px">Ako</h4>
+          <p class="small">Jeden týždeň, <strong>polovica sérií, rovnaká váha</strong>:</p>
+          <ul class="small" style="padding-left:18px">
+            <li>4 série → 2, 3 série → 2.</li>
+            <li>Váha ostáva na ~90 % obvyklej.</li>
+            <li>Zastav na <strong>RIR 3–4</strong>, nikde nechoď do zlyhania.</li>
+            <li>Kardio a chôdzu nechaj tak, alebo pridaj.</li>
+          </ul>
+          <p class="small" style="margin-top:8px"><strong>Nerob voľný týždeň bez posilky.</strong> Znížený objem pri zachovanej intenzite udrží nervový drive aj techniku; úplná pauza ti vezme oboje.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Odhad dĺžky tréningov <span class="acclabel">46–55 min</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>Deň</th><th class="n">Sérií</th><th class="n">Rozcvička</th><th class="n">Práca</th><th class="n">Spolu</th><th class="n">+ pás</th></tr></thead>
+          <tbody>
+            <tr><td>1 — Prsia + triceps + zadný deltoid</td><td class="n">19</td><td class="n">6 min</td><td class="n">44 min</td><td class="n">50 min</td><td class="n">+20 min</td></tr>
+            <tr><td>2 — Chrbát + biceps + úchop</td><td class="n">19 + carry</td><td class="n">6 min</td><td class="n">44 min</td><td class="n">50 min</td><td class="n">+20 min</td></tr>
+            <tr><td>3 — Ramená + hamstringy + core</td><td class="n">22</td><td class="n">5 min</td><td class="n">43 min</td><td class="n">48 min</td><td class="n">+12 min VO₂max</td></tr>
+            <tr><td>4 — Nohy + lýtka</td><td class="n">19</td><td class="n">7 min</td><td class="n">48 min</td><td class="n">55 min</td><td class="n">+10 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note warn"><b>Ak sa nezmestíš</b>Poradie škrtania je jasné a v tomto poradí: (1) leg extension v deň nôh, (2) preacher curl v deň chrbta, (3) druhá séria seated calf raise. Nikdy neškrtaj prvé tri cviky dňa — tam je 80 % stimulu. A nikdy neskracuj pauzy pri ťažkých cvikoch, radšej vyhoď posledný cvik: kratšia pauza znamená menej opakovaní, čiže menej objemu na tom cviku, kde ti záleží najviac.</div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ RIZIKÁ ══════════ -->
+<section id="rizika">
+  <div class="sechead"><span class="eyebrow">10 · Riziká a poradie</span><h2>Čo ťa môže vyradiť a čo je poprehadzované</h2></div>
+
+  <details class="acc" open>
+    <summary>Rizikové cviky v tvojom pláne <span class="acclabel">5 položiek</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th>Riziko</th><th>Čo s tým</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Barbell bent-over row</strong></td><td>Najrizikovejší cvik v pláne. Izometrická záťaž driekovej chrbtice po celú sériu; s únavou sa chrbát začne guľatiť a záťaž sa presunie z medzilopatkových svalov na disky. U samouka to nastáva skôr, než si to všimne.</td><td>Nikdy nechoď bližšie než RIR 2. Ukonči sériu vo chvíli, keď sa <em>zmení uhol trupu</em>, nie keď nedáš opakovanie. Ak ho robíš 3 roky a nikdy si sa nevidel zboku: <strong>natoč sa</strong>. Ak vidíš zaguľatenie, prejdi na chest-supported row.</td></tr>
+            <tr><td><strong>Romanian deadlift na Smith</strong></td><td>Zvislá dráha proti oblúkovému pohybu. Buď ťaháš tyč po stehnách a brzdíš pohyb, alebo posúvaš trup dopredu a vzniká strihové zaťaženie drieku. Navyše stroj nesie stabilitu, takže si vytrénuješ vzor, ktorý s voľnou váhou nefunguje.</td><td>Prejdi na voľnú tyč alebo jednoručky. Začni na ~60 % váhy, ktorú dávaš na Smithi — bude to iný cvik.</td></tr>
+            <tr><td><strong>Preacher curl machine</strong></td><td>V spodnej polohe je lakeť plne vystretý pod plným napätím. Ak tam „padneš“ a odrazíš sa, dráždi to úpon bicepsu — a distálne bicepsové problémy sú dlhé a nepríjemné.</td><td>Posledných 15° kontroluj, neodrážaj. Rozsah 10–15 opakovaní, nikdy nie ťažké trojky.</td></tr>
+            <tr><td><strong>DB lateral raise ťažko</strong></td><td>Keď ide váha príliš hore, zapne sa horný trapéz, rameno sa nadvihne a hlavica sa pritlačí pod acromion. Opakovane, roky, to je klasická cesta k dráždeniu ramena.</td><td>Rozsah 12–20, RIR 0–1. Ramená drž dolu. Ak sa pri poslednom opakovaní krčíš, váha je príliš vysoká.</td></tr>
+            <tr><td><strong>Machine leg extension ťažko a nízko</strong></td><td>V malých opakovaniach s veľkou váhou rastie tlak v patelofemorálnom kĺbe, hlavne v poslednej tretine pohybu.</td><td>Drž 12–20 opakovaní. Ako izolácia na konci tréningu, nie ako ťažký cvik.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note bad"><b>Najväčšie skryté riziko nie je jeden cvik</b>Je to kombinácia: <strong>3 tlaky na prsia + 0 zadných deltoidov + 0 externej rotácie + 0 core</strong>, opakovaná roky. Jednotlivo nič, spolu je to presne ten profil, ktorý po štyridsiatke končí u fyzioterapeuta s ramenom alebo driekom. Opraviť to stojí štyri série týždenne.</div>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary>Poradie cvikov — čo prehodiť <span class="acclabel">2 zásahy</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Deň</th><th>Verdikt</th><th>Poznámka</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1 — Prsia + triceps</strong></td><td><span class="tag t-ok">v poriadku</span></td><td>Incline press prvý je správne. Jediná zmena je obsahová: crossover von, horizontálny tlak dnu, a zadný deltoid na koniec ako protiváha.</td></tr>
+            <tr><td><strong>2 — Chrbát + biceps</strong></td><td><span class="tag t-ok">v poriadku</span></td><td>Barbell row prvý je správne — je to najťažší cvik a potrebuje čerstvý driek. Biceps až po chrbte, aby ti neunavené predlaktia neobmedzovali ťahy.</td></tr>
+            <tr><td><strong>3 — Ramená</strong></td><td><span class="tag t-part">upraviť</span></td><td>Tlak pred rozpažením je správne. Problém nie je poradie, ale to, že deň má len 2 cviky.</td></tr>
+            <tr><td><strong>4 — Nohy</strong></td><td><span class="tag t-no">prehodiť</span></td><td><strong>Tu je reálna chyba.</strong> Robíš <em>leg extension pred leg pressom</em> — izoláciu pred viackĺbovým cvikom. Kvadriceps ide do leg pressu predunavený, takže na hlavnom cviku zdvihneš menej a stimul je nižší. Zároveň RDL prvý unaví vzpriamovače pred zvyškom nôh.<br><br><strong>Správne poradie:</strong> drepový vzor (hack squat) → RDL → leg curl → split squat → leg extension → lýtka. Najťažší viackĺbový prvý, izolácia posledná.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><b>Jedna výnimka z pravidla</b>Ak by si niekedy chcel prioritne dobiehať konkrétnu partiu, daj ju na začiatok dňa aj keď je to izolácia. Prvý cvik dostane najviac energie a najlepšiu techniku. Napr. ak by ti šlo hlavne o bočný deltoid, lateral raise môže ísť pred tlak.</div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ NÁHRADY ══════════ -->
+<section id="nahrady">
+  <div class="sechead"><span class="eyebrow">11 · Náhradné cviky</span><h2>Keď je stroj obsadený</h2></div>
+  <p class="lead">Náhrada musí sedieť na tú istú funkciu, nie na tú istú partiu. Preto tu nenájdeš „lat pulldown → barbell row“ — to je iný vzor.</p>
+  <div class="tscroll">
+    <table>
+      <thead><tr><th>Cvik v pláne</th><th>Náhrada 1</th><th>Náhrada 2</th><th>Pozor na</th></tr></thead>
+      <tbody id="substable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ TECHNIKA ══════════ -->
+<section id="technika">
+  <div class="sechead"><span class="eyebrow">12 · Technika</span><h2>Pre samouka: čo si nikto nevšimne za teba</h2></div>
+
+  <p class="lead">Tri roky bez trénera znamená tri roky utuženého vzoru — dobrého aj zlého. Pri každom cviku sú kľúčové body, <strong>najčastejšia chyba samoukov</strong> a spôsob, ako si overíš, či cvik naozaj cítiš tam, kde máš.</p>
+
+  <div class="note bad"><b>Predtým, než pôjdeš ďalej — jedna vec</b>
+  Natoč sa na telefón <strong>zboku</strong> pri prvom pracovnom sete každého ťažkého cviku. Nie na kontrolu ega, ale preto, že proprioceptívny obraz pohybu je u samouka takmer vždy posunutý oproti realite — cítiš rovný chrbát tam, kde je zaguľatený, a plný rozsah tam, kde je polovičný. Jedno video na cvik ti povie viac než celý tento text.</div>
+
+  <div id="techsections"></div>
+</section>
+
+<!-- ══════════ LONGEVITY ══════════ -->
+<section id="longevity">
+  <div class="sechead"><span class="eyebrow">13 · Longevity</span><h2>To, čo ti o dvadsať rokov bude chýbať</h2></div>
+
+  <p class="lead">Longevity je tvoj tretí cieľ, ale je to jediný z troch, kde sa zameškaný čas nedá dobehnúť. Svaly naberieš aj o päť rokov. VO₂max, hustotu kostí a rozsah v bedrách nie.</p>
+
+  <div class="card">
+    <div class="acclabel" style="margin-bottom:12px">Graf 6 — longevity dashboard</div>
+    <div class="lgrid" id="longdash"></div>
+  </div>
+
+  <details class="acc" open>
+    <summary>Kardio — koľko, kedy a či sa to vôbec dá stihnúť <span class="acclabel">najväčšia medzera</span></summary>
+    <div class="accbody">
+      <h4 style="margin-bottom:8px">Najprv: je tvoja chôdza so sklonom vôbec zóna 2?</h4>
+      <p>Dá sa to spočítať. ACSM rovnica pre chôdzu: <span class="mono">VO₂ = 3,5 + 0,1·S + 1,8·S·G</span>, kde S je rýchlosť v m/min a G je sklon ako desatinné číslo.</p>
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>Nastavenie</th><th class="n">VO₂ (ml/kg/min)</th><th class="n">MET</th><th>Zóna</th></tr></thead>
+          <tbody>
+            <tr><td>4 km/h, sklon 10 % <em>(tvoje)</em></td><td class="n">22,2</td><td class="n">6,3</td><td><span class="tag t-part">spodný okraj zóny 2</span></td></tr>
+            <tr><td>5 km/h, sklon 12 %</td><td class="n">29,8</td><td class="n">8,5</td><td><span class="tag t-ok">solídna zóna 2</span></td></tr>
+            <tr><td>5,5 km/h, sklon 15 %</td><td class="n">37,7</td><td class="n">10,8</td><td><span class="tag t-ok">horná zóna 2 / spodná 3</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Verdikt:</strong> pri odhadovanom VO₂max niekde okolo 40–45 ml/kg/min (silový tréning, žiadne kardio) ti tvojich 6,3 MET vychádza na zhruba <strong>50–55 % VO₂max</strong>. To je technicky spodná hranica zóny 2 — teda áno, počíta sa, ale je to skôr regenerácia než tréning. A hlavne: <strong>4 × 10 min = 40 minút týždenne</strong>, čo je zhruba štvrtina odporúčaného minima 150 min stredne intenzívnej aktivity.</p>
+
+      <h4 style="margin:18px 0 8px">Riešenie bez pridania času navyše</h4>
+      <p class="small">Tvoje zadanie bolo „žiadny extra čas navyše“. Tu je verzia, ktorá sa vojde do existujúceho rozvrhu — kľúč je, že kardio ide <em>za</em> silovým tréningom a v deň ramien, ktorý je najkratší.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Deň</th><th>Silový tréning</th><th>Kardio hneď po</th><th class="n">Čas</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1 — Prsia</strong></td><td>50 min</td><td>Pás <strong>5 km/h, sklon 12 %, 20 min</strong> — zóna 2</td><td class="n">70 min</td></tr>
+            <tr><td><strong>2 — Chrbát</strong></td><td>50 min</td><td>Pás <strong>5 km/h, sklon 12 %, 20 min</strong> — zóna 2</td><td class="n">70 min</td></tr>
+            <tr><td><strong>3 — Ramená</strong></td><td>46 min</td><td><strong>VO₂max blok, 12 min:</strong> bicykel, 10 × (30 s tvrdo / 30 s ľahko) + 2 min výklus</td><td class="n">58 min</td></tr>
+            <tr><td><strong>4 — Nohy</strong></td><td>55 min</td><td>Pás <strong>4 km/h, sklon 5 %, 10 min</strong> — len prekrvenie</td><td class="n">65 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:12px"><strong>Spolu:</strong> ~50 min riadenej zóny 2 + 12 min práce na VO₂max týždenne. Zvyšok do 150 minút doplň chôdzou mimo posilky — cieľ <strong>8–10 tisíc krokov denne</strong>. Toto nie je vata: bežná denná chôdza je z hľadiska mortality skoro rovnako hodnotná ako plánované kardio a nestojí ťa ani minútu tréningového času.</p>
+
+      <div class="grid2">
+        <div class="note good"><b>Prečo VO₂max blok práve v deň ramien</b>Je to najkratší tréning a najďalej od dňa nôh. Intervalový blok po tréningu ramien nezasiahne nič, čo budeš potrebovať zajtra. Nikdy ho nedávaj bezprostredne pred alebo po dni nôh.</div>
+        <div class="note warn"><b>Zabrzdí ma kardio v naberaní?</b>Interferenčný efekt je reálny, ale hlavne pri veľkých objemoch behu a pri kardiu na tie isté svaly krátko pred silovým tréningom. Bicykel a chôdza so sklonom <em>po</em> tréningu, v tomto objeme, ti rast nezastavia. Čo ti ho zastaví, je nedojedanie kalórií, ktoré kardio spálilo — to zarátaj.</div>
+      </div>
+      <p class="small">Ak by si niekedy predsa mal 40 minút navyše mimo posilky, najlepšie ich investuješ do jednej dlhšej zóny 2 v netréningový deň — vonku, na bicykli alebo svižnou chôdzou. Zóna 2 = dýchaš zrýchlene, ale vieš rozprávať v celých vetách.</p>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary>Sila úchopu <span class="acclabel">prediktor dlhovekosti, v pláne nula</span></summary>
+    <div class="accbody">
+      <p>Sila stisku ruky je jeden z najlepšie zdokumentovaných jednoduchých prediktorov celkovej mortality — nie preto, že by silné predlaktia predlžovali život, ale preto, že úchop veľmi presne odráža celkovú svalovú hmotu a nervovú funkciu. Vo veľkých kohortových štúdiách (napr. PURE) sa každý pokles o niekoľko kilogramov stisku spája s merateľne vyšším rizikom. Ako <em>ukazovateľ</em> je teda mimoriadne užitočný — a keďže ho ovplyvňuje to isté, čo naberanie svalov, oplatí sa ho aj priamo trénovať.</p>
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>Čo robiť</th><th class="n">Dávka</th><th>Kam</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Farmer's carry</strong> — najťažšie jednoručky, ktoré udržíš</td><td class="n">2 × 30–40 m</td><td>Koniec dňa chrbta</td></tr>
+            <tr><td><strong>Dead hang</strong> na hrazde</td><td class="n">2 × max (cieľ 60 s)</td><td>Koniec ktoréhokoľvek dňa, alebo do pauzy</td></tr>
+            <tr><td><strong>Prestaň používať trhačky</strong> na všetkom okrem najťažšej série ťahov</td><td class="n">—</td><td>Deň chrbta</td></tr>
+            <tr><td><strong>Hanging leg raise</strong> — vedľajší efekt: dlhá izometria v úchope</td><td class="n">3 × 8–15</td><td>Deň ramien</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><b>Kde stojíš</b>Ak niekde natrafíš na dynamometer, orientačne: pre muža v tridsiatke je priemer okolo <strong>45–50 kg</strong> na dominantnú ruku, nad 55 kg je nadpriemer. Zmeraj sa raz a potom o pol roka — je to najlacnejší longevity marker, aký máš k dispozícii.</div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Hustota kostí <span class="acclabel">leg press ti nedáva nič</span></summary>
+    <div class="accbody">
+      <p>Kosť reaguje na tri veci: <strong>veľkosť zaťaženia, rýchlosť jeho nárastu a miesto, kde pôsobí.</strong> Systémovo sa to nedá — bedro a driek sa musia zaťažiť priamo. Preto je posilňovanie na strojoch v sede z hľadiska kostí takmer neutrálne.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Cvik</th><th>Efekt na kosť</th><th>Prečo</th></tr></thead>
+          <tbody>
+            <tr><td>Machine leg press</td><td><span class="tag t-no">žiadny</span></td><td>Ležíš, chrbtica nenesie nič. Sval rastie, kosť sa nedozvie.</td></tr>
+            <tr><td>Machine leg extension, seated calf</td><td><span class="tag t-no">žiadny</span></td><td>Sedíš, izolovaný jeden kĺb.</td></tr>
+            <tr><td>Smith RDL</td><td><span class="tag t-part">čiastočný</span></td><td>Stojíš so záťažou — driek dostane niečo, ale stroj berie časť zaťaženia.</td></tr>
+            <tr><td>Barbell bent-over row</td><td><span class="tag t-part">čiastočný</span></td><td>Axiálna kompresia áno, ale v predklone.</td></tr>
+            <tr><td><strong>Hack squat / Smith squat</strong> <span class="badge b-new">Nové</span></td><td><span class="tag t-part">čiastočný</span></td><td>Záťaž ide cez trup, ale časť nesie stroj.</td></tr>
+            <tr><td><strong>Barbell back squat</strong> <span class="badge b-new">Nové</span></td><td><span class="tag t-ok">silný</span></td><td>Priama axiálna kompresia driekovej chrbtice a krčka stehennej kosti — presne dve miesta, kde sa meria denzitometria. Toto je longevity dôvod, prečo sa oplatí drep naučiť.</td></tr>
+            <tr><td><strong>Farmer's carry</strong> <span class="badge b-new">Nové</span></td><td><span class="tag t-ok">silný</span></td><td>Axiálna kompresia v stoji plus mikronárazy pri každom kroku. Zároveň najbezpečnejšia forma axiálneho zaťaženia, aká existuje.</td></tr>
+            <tr><td><strong>Pogo hops / výskoky</strong> <span class="badge b-new">Nové</span></td><td><span class="tag t-ok">silný</span></td><td>Kosť reaguje na <em>rýchlosť</em> nárastu zaťaženia viac než na jeho veľkosť. 2 × 10 nízkych poskokov pred dňom nôh stojí 60 sekúnd a je to jediný nárazový podnet, ktorý v pláne budeš mať.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note good"><b>Konkrétne</b>Pridaj <strong>2 × 10 nízkych pogo hopov do rozcvičky pred dňom nôh</strong> (skoky na mieste z členkov, kolená mäkké, minimálny čas na zemi). Plus farmer's carry v deň chrbta. Tieto dve veci ti pokryjú nárazový aj axiálny podnet a spolu stoja štyri minúty týždenne.</div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Mobilita a stabilita <span class="acclabel">v pauzách, nie navyše</span></summary>
+    <div class="accbody">
+      <p>Kľúčová vec: <strong>toto nemusí stáť ani minútu navyše.</strong> Máš 2-minútové pauzy medzi ťažkými sériami — to je mŕtvy čas, do ktorého sa mobilita vojde bez toho, aby ovplyvnila výkon (pokiaľ nenaťahuješ práve pracujúci sval).</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Oblasť</th><th>Čo ti bude chýbať o 20 rokov</th><th>Cvik</th><th>Kedy</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Bedrá</strong></td><td>Vnútorná a vonkajšia rotácia — prvé, čo mizne. Prejaví sa neschopnosťou sedieť na zemi, obliekať si ponožky v stoji a bolesťou drieku, ktorá bedrá kompenzujú.</td><td>90/90 hip switch (10 opak.), couch stretch (45 s / strana), hlboký drep s vlastnou váhou (60 s)</td><td>Rozcvička dňa nôh + pauzy v deň chrbta</td></tr>
+            <tr><td><strong>Hrudná chrbtica</strong></td><td>Extenzia a rotácia. Bez nej sa pohyb presunie do drieku a krku. Toto je pri tvojej sedavej práci a troch tlakových cvikoch najviac ohrozená oblasť.</td><td>Extenzia cez lavičku alebo valec (10 pomalých), open book (8 / strana), wall slides (10)</td><td>Rozcvička dňa prsníkov a ramien</td></tr>
+            <tr><td><strong>Ramená</strong></td><td>Flexia nad hlavu a externá rotácia. Bez nej sa nedostaneš rukou za chrbát a nad hlavu — a nedáš ani overhead cvik.</td><td>Dead hang (2 × 30 s), pass-through s gumou (10), banded external rotation (15 / strana)</td><td>Rozcvička + pauzy v deň prsníkov</td></tr>
+            <tr><td><strong>Členky</strong></td><td>Dorzálna flexia. Obmedzený členok znemožní hlboký drep, zhorší rovnováhu a je jedným z prediktorov pádov v staršom veku.</td><td>Knee-to-wall (2 × 10 / strana) — <em>cieľ 10–12 cm od steny po palec</em></td><td>Rozcvička dňa nôh, meraj raz mesačne</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Jednonožná práca a rovnováha <span class="acclabel">leg press sa nepočíta</span></summary>
+    <div class="accbody">
+      <p><strong>Čo máš:</strong> jednonožný leg press a single-arm cable row. Sú to jednostranné cviky v zmysle záťaže, ale <em>nie</em> v zmysle rovnováhy — pri leg presse máš panvu opretú o sedadlo, takže gluteus medius a stabilizátory bedra nerobia nič. Presne tie svaly, ktorých slabosť je v päťdesiatke príčinou nestability a pádov.</p>
+      <p><strong>Čo doplniť:</strong></p>
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>Cvik</th><th class="n">Dávka</th><th>Čo rieši</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Bulgarian split squat</strong></td><td class="n">2 × 8–12 / nohu</td><td>Nahrádza jednonožný leg press. Kvadriceps + gluteus + gluteus medius + rovnováha naraz.</td></tr>
+            <tr><td><strong>Single-leg RDL</strong> (voliteľne)</td><td class="n">2 × 8 / nohu</td><td>Hamstringy + stabilita bedra + propriocepcia členka. Ľahká váha, ide o kontrolu.</td></tr>
+            <tr><td><strong>Suitcase carry</strong> (carry s jednou jednoručkou)</td><td class="n">2 × 30 m / strana</td><td>Anti-laterálna flexia. Najprirodzenejší anti-rotačný tréning, aký existuje.</td></tr>
+            <tr><td><strong>Test:</strong> stoj na jednej nohe so zavretými očami</td><td class="n">cieľ 30 s</td><td>Zmeraj sa raz za pol roka. Je to najjednoduchší funkčný marker, ktorý máš.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary>Krčná a driecová chrbtica <span class="acclabel">čo v pláne vytvára riziko</span></summary>
+    <div class="accbody">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Zdroj rizika</th><th>Čo sa deje</th><th>Protiváha</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Barbell bent-over row</strong> + Smith RDL, oboje bez core tréningu</td><td>Driek dostáva vysokú izometrickú záťaž opakovane, ale nikdy nie je trénovaný cielene. Dostáva únavu bez adaptácie — najhorší možný pomer.</td><td>45° back extension (3 série), farmer's carry, ab wheel. Vzpriamovače treba <em>trénovať</em>, nie iba unavovať.</td></tr>
+            <tr><td><strong>Pohľad hore pri rowe a RDL</strong></td><td>Veľmi častá chyba samoukov — človek zdvihne hlavu, aby videl do zrkadla. Krčná chrbtica ide do hyperextenzie pod záťažou, opakovane, roky.</td><td>Krk drž v predĺžení chrbtice. Pozeraj sa na bod na zemi ~2 m pred sebou. Ak potrebuješ zrkadlo, zmeň si postavenie, nie krk.</td></tr>
+            <tr><td><strong>Sedavá práca + 3 tlakové cviky + 0 zadných deltoidov</strong></td><td>Protrakcia lopatiek a predsunuté držanie hlavy sa utužuje z oboch strán naraz.</td><td>Face pull, reverse pec deck, DB shrug, mobilita hrudnej chrbtice. To všetko je už v novom pláne.</td></tr>
+            <tr><td><strong>Chýbajúca anti-rotácia</strong></td><td>Šikmé svaly a quadratus lumborum nedostávajú nič. Driek nemá bočnú stabilitu.</td><td>Pallof press a suitcase carry — 2–3 série týždenne stačí.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note good"><b>Dobrá správa</b>Všetky štyri protiváhy sú už v optimalizovanom pláne a spolu stoja asi 8 minút týždenne. Toto je tá časť plánu, ktorú o dvadsať rokov oceníš najviac a ktorá sa dnes zdá najzbytočnejšia.</div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ VÝŽIVA ══════════ -->
+<section id="vyziva">
+  <div class="sechead"><span class="eyebrow">14 · Výživa</span><h2>Rámcovo — a jedno rozhodnutie</h2></div>
+
+  <p class="lead">Chcieť naberať svaly a zároveň zhodiť tuk je legitímne, ale sú to dva rôzne kalorické režimy. Pri troch rokoch tréningu a suboptimálnom pláne máš stále priestor na oboje naraz — ale nie donekonečna.</p>
+
+  <div class="card">
+    <h3 style="margin-bottom:10px">Východiskové čísla</h3>
+    <div class="tscroll">
+      <table class="narrow">
+        <thead><tr><th>Veličina</th><th class="n">Odhad</th><th>Ako som k tomu prišiel</th></tr></thead>
+        <tbody>
+          <tr><td>Bazálny metabolizmus</td><td class="n">~1 830 kcal</td><td>Mifflin–St Jeor pri 180 cm / 85 kg / muž (predpokladám vek okolo 30)</td></tr>
+          <tr><td>Udržiavací príjem</td><td class="n">~2 700–2 850 kcal</td><td>BMR × ~1,5 (4 silové tréningy + kardio + bežná aktivita)</td></tr>
+          <tr><td>Lean bulk</td><td class="n">~2 950–3 100 kcal</td><td>+8 % nad udržiavací → prírastok ~0,2–0,3 kg / týždeň</td></tr>
+          <tr><td>Mierny deficit</td><td class="n">~2 350–2 500 kcal</td><td>−12 % pod udržiavací → úbytok ~0,35–0,45 kg / týždeň</td></tr>
+          <tr><td>Bielkoviny</td><td class="n">145–190 g</td><td>1,7–2,2 g/kg. Pri deficite choď na hornú hranicu.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small" style="margin-top:10px">Toto sú <em>odhady na začiatok</em>, nie čísla z laboratória. Skutočný udržiavací príjem zistíš tak, že dva týždne budeš jesť rovnako a sledovať týždenný priemer hmotnosti.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="note bad"><b>Ktorá cesta a prečo</b>
+    <strong>Odpoveď závisí od jednej veci, ktorú vieš len ty:</strong> koľko máš teraz tuku.<br><br>
+    Pri 180 cm a 85 kg máš BMI ~26, čo samo o sebe nehovorí nič — môže to byť 14 % aj 24 % tuku.<br><br>
+    <strong>Ak vidíš horné dva „štvorčeky“ brucha nalačno</strong> (zhruba ≤15 % tuku): choď do <strong>lean bulku</strong>. Nižšie percento tuku znamená lepší pomer nabraného svalu k tuku, a ty máš pred sebou plán s piatimi novými cvikmi — to je veľká príležitosť na rast.<br><br>
+    <strong>Ak brucho nevidíš vôbec</strong> (zhruba ≥20 %): daj najprv <strong>10–12 týždňov mierneho deficitu</strong> na ~2 400 kcal, potom prejdi do lean bulku. Dôvod nie je estetika — pri vyššom percente tuku ide väčší podiel prebytku do tuku a horšie sa reguluje inzulínová citlivosť.<br><br>
+    <strong>Ak si niekde medzi:</strong> drž udržiavací príjem a vysoké bielkoviny. S novým plánom a tromi rokmi tréningu je rekompozícia — súčasný nárast svalu a pokles tuku — pri tvojom profile reálna. Toto je pravdepodobne tvoj prípad a je to aj najmenej frustrujúca cesta.</div>
+    <div>
+      <div class="card">
+        <h3 style="margin-bottom:10px">Štyri pravidlá, nič viac</h3>
+        <ol style="padding-left:20px;margin:0">
+          <li style="margin-bottom:10px"><strong>Bielkoviny rozdeľ, nenaháňaj celkom.</strong> 4 jedlá × ~40 g. Zjesť 180 g v dvoch jedlách nie je to isté ako v štyroch.</li>
+          <li style="margin-bottom:10px"><strong>Meraj týždenný priemer, nie ranné číslo.</strong> Váž sa každý deň nalačno, rozhoduj sa podľa priemeru za 7 dní. Denné výkyvy ±1,5 kg sú voda, nie tuk.</li>
+          <li style="margin-bottom:10px"><strong>Uprav až po dvoch–troch týždňoch bez zmeny trendu.</strong> Krok je ±150–200 kcal, nie ±500.</li>
+          <li><strong>Spánok 7–9 hodín je súčasť plánu, nie bonus.</strong> Pri nedostatku spánku ide väčší podiel úbytku hmotnosti zo svalu a horšie sa reguluje chuť do jedla. Je to najpodceňovanejšia premenná celého tohto dokumentu.</li>
+        </ol>
+        <p class="small" style="margin-top:12px">Voliteľne: <strong>kreatín monohydrát 5 g denne</strong>, kedykoľvek počas dňa, bez nasycovacej fázy. Najlepšie preskúmaný doplnok, aký existuje, a pri tvojich cieľoch má zmysel. Nič iné nepotrebuješ.</p>
+      </div>
+    </div>
+  </div>
+  <p class="small" style="margin-top:6px">Toto sú všeobecné odhady pre zdravého dospelého, nie individuálne odporúčanie — pri akýchkoľvek zdravotných otázkach alebo väčšej zmene režimu má zmysel prebrať to s lekárom alebo výživovým poradcom.</p>
+</section>
+
+<!-- ══════════ ŤAHÁKY ══════════ -->
+<section id="tahak">
+  <div class="sechead"><span class="eyebrow">15 · Ťaháky do posilky</span><h2>Vytlač a vezmi so sebou</h2></div>
+  <p class="lead">Štyri karty, jedna na tréningový deň. Prázdne políčka sú na dopísanie váhy a opakovaní. Vytlač obojstranne — vojdú sa na dva listy.</p>
+  <p><button class="printbtn" onclick="window.print()" style="font-family:var(--fm);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;background:var(--ink);color:#fff;border:0;padding:11px 18px;border-radius:3px;cursor:pointer">Vytlačiť / uložiť ako PDF</button></p>
+  <div id="sheets"></div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="wrap">
+    <p><b>Analýza tréningového plánu</b> · 180 cm / 85 kg · 3 roky tréningu · august 2026</p>
+    <p style="max-width:640px">Toto je vzdelávací materiál založený na súčasnom konsenze v tréningovej literatúre, nie zdravotné ani diagnostické odporúčanie. Odhady kalórií, VO₂max a rozsahov objemu sú orientačné a platia pre zdravého dospelého bez zdravotných obmedzení. Pri bolesti, ktorá pretrváva, alebo pred väčšou zmenou režimu sa poraď s lekárom alebo fyzioterapeutom.</p>
+    <a class="backtop" href="#zhrnutie">↑ Späť hore</a>
+  </div>
+</footer>
+
+<script>
+"use strict";
+const C={ink:"#0e1216",ink2:"#5a636e",ink3:"#8d959e",line:"#d2d7dd",p25:"#bf3a2b",p20:"#17559b",p15:"#d99b00",p10:"#1f7a44",p05:"#78828d",band:"#cfe3d5",old:"#a8b0b8"};
+const $=(s)=>document.querySelector(s);
+const esc=(s)=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const fx=(n)=>Number(n).toFixed(1).replace(".",",").replace(",0","");
+
+/* ═══════════ DÁTA ═══════════ */
+
+// [partia, priame, nepriame, spolu4x, min, max, po_zmene]
+const VOL=[
+ ["Prsia",10.5,0,10.5,10,20,10.5],
+ ["Latissimus",10.5,0,10.5,10,20,10],
+ ["Stredný chrbát",3.5,3.5,7.0,8,16,8.8],
+ ["Predný deltoid",3.5,1.8,5.3,6,12,7.3],
+ ["Bočný deltoid",3.5,1.8,5.3,8,20,8.5],
+ ["Zadný deltoid",0,1.8,1.8,6,16,7.8],
+ ["Horný trapéz",0,0.9,0.9,4,12,4.5],
+ ["Biceps",7.0,5.3,12.3,8,16,10],
+ ["Triceps",7.0,3.5,10.5,8,16,11.5],
+ ["Predlaktia / úchop",0,2.6,2.6,3,8,6.5],
+ ["Kvadriceps",7.0,0,7.0,10,20,9],
+ ["Hamstringy",3.5,0,3.5,8,18,11.5],
+ ["Gluteus",3.5,1.8,5.3,8,16,10],
+ ["Lýtka",3.5,0,3.5,6,16,7],
+ ["Vzpriamovače",0,3.5,3.5,4,10,8],
+ ["Core",0,0,0,6,12,8]
+];
+
+const RADAR={ax:["Prsia","Chrbát – šírka","Chrbát – hrúbka","Ramená","Biceps","Triceps","Kvadriceps","Hamstringy","Gluteus + lýtka","Core + úchop"],
+ now:[7,7,7,3.5,8,5,4,2,3,0.5], opt:[8,8,8,8.5,8,9,8,9,8,8]};
+
+const PAT=[["Horizontálny tlak",60,90],["Vertikálny tlak",85,85],["Horizontálny ťah",90,90],["Vertikálny ťah",70,80],
+ ["Hip hinge",55,90],["Drep / knee extension",45,90],["Knee flexion",0,90],["Jednostranná práca v stoji",15,80],
+ ["Core anti-extension",0,85],["Core anti-rotácia",0,75],["Loaded carry / úchop",0,90]];
+
+const HM_COLS=["Prsia","Pred. D","Boč. D","Zad. D","Lats","Str. chrbát","Trapéz","Biceps","Triceps","Úchop","Kvadr.","Hamstr.","Gluteus","Lýtka","Core"];
+const HM=[
+ ["DB incline bench press",[2,1,0,0,0,0,0,0,1,0,0,0,0,0,0]],
+ ["Machine fly (pec deck)",[2,1,0,0,0,0,0,0,0,0,0,0,0,0,0]],
+ ["Low cable crossover",[2,1,0,0,0,0,0,0,0,0,0,0,0,0,0]],
+ ["Cable triceps pushdown",[0,0,0,0,0,0,0,0,2,0,0,0,0,0,0]],
+ ["EZ bar pushdown",[0,0,0,0,0,0,0,0,2,0,0,0,0,0,0]],
+ ["Barbell bent-over row",[0,0,0,1,2,2,1,1,0,1,0,0,0,0,1]],
+ ["Fixed lat pulldown",[0,0,0,0,2,1,0,1,0,1,0,0,0,0,0]],
+ ["Vertical row (stroj)",[0,0,0,0,2,1,0,1,0,1,0,0,0,0,0]],
+ ["Single-arm seated cable row",[0,0,0,1,2,2,0,1,0,1,0,0,0,0,1]],
+ ["Hammer curl",[0,0,0,0,0,0,0,2,0,1,0,0,0,0,0]],
+ ["DB alternating curl",[0,0,0,0,0,0,0,2,0,0,0,0,0,0,0]],
+ ["Preacher curl machine",[0,0,0,0,0,0,0,2,0,0,0,0,0,0,0]],
+ ["DB lateral raise",[0,0,2,0,0,0,1,0,0,0,0,0,0,0,0]],
+ ["DB seated shoulder press",[0,2,1,0,0,0,0,0,1,0,0,0,0,0,0]],
+ ["Smith Romanian deadlift",[0,0,0,0,0,0,0,0,0,1,0,2,2,0,1]],
+ ["Machine leg extension",[0,0,0,0,0,0,0,0,0,0,2,0,0,0,0]],
+ ["Machine leg press (1 noha)",[0,0,0,0,0,0,0,0,0,0,2,0,1,0,0]],
+ ["Machine seated calf raise",[0,0,0,0,0,0,0,0,0,0,0,0,0,2,0]]
+];
+
+const RATIOS=[
+ {t:"Tlak vs ťah",a:"Tlak",b:"Ťah",now:54.5,opt:44.8,ideal:45},
+ {t:"Horná vs dolná časť tela",a:"Horná",b:"Dolná",now:75,opt:64,ideal:60},
+ {t:"Kvadriceps vs hamstringy",a:"Kvadriceps",b:"Hamstringy",now:67,opt:44,ideal:50}
+];
+
+// [cvik, partia, tier, prečo, pozor, stav]  stav: '' | 'new' | 'cut'
+const EX=[
+ ["DB incline bench press","Prsia","S","Ťažký tlak s plným natiahnutím prsného svalu v spodnej polohe, veľký rozsah, jednoduchá progresia, jednoručky umožnia prirodzenú dráhu lakťov. Najlepší cvik v tvojom pláne.","Lavička 30°, nie 45° — nad 30° sa cvik mení na tlak na ramená. Lakte ~45° od tela, nie roztiahnuté do strán.",""],
+ ["Machine chest press / flat DB press","Prsia","A","Ťažký horizontálny tlak s veľmi jednoduchou progresiou a nízkymi nárokmi na stabilitu — vieš ísť blízko zlyhania bezpečne. Doplní stredné a dolné prsia, ktoré incline nepokryje.","Na stroji nastav sedadlo tak, aby madlá boli vo výške stredu hrudníka, nie pri kľúčnych kostiach.","new"],
+ ["Machine fly (pec deck)","Prsia","A","Čistá addukcia bez tricepsu, dobrý rozsah, nulové nároky na stabilitu. Zrážka len za to, že u väčšiny strojov je vrchol odporu v strede dráhy, nie v natiahnutí.","Lakte mierne pokrčené a zafixované. Nestláčaj madlá rukami — pohyb ide z ramena, ruky sú len háky.",""],
+ ["Low cable crossover","Prsia","C","Funguje, ale duplikuje horné prsia, ktoré už máš z incline pressu. Odpor je najväčší v skrátenej polohe a najmenší v natiahnutí — teda presne naopak, než by mal byť. Progresívne preťaženie je na kábloch s malými skokmi ťažké.","Ak si ho chceš nechať, rob ho ako posledný cvik na 15–20 opakovaní, nie ako tretí ťažký.","cut"],
+ ["Overhead cable triceps extension","Triceps","S","Jediný bežný cvik, ktorý zaťaží dlhú hlavu tricepsu v maximálnom natiahnutí — a kábel na rozdiel od činky drží napätie práve v tejto pozícii. Dlhá hlava je najväčšia z troch a v tvojom pláne nedostáva nič.","Lakte drž pri hlave, nerozťahuj ich do strán. Trup mierne predklonený, aby bola dráha čistá.","new"],
+ ["EZ bar skullcrusher (za hlavu)","Triceps","A","To isté natiahnutie dlhej hlavy s voľnou váhou. Zrážka: v hornej časti pohybu napätie mizne a u časti ľudí dráždi lakte.","Spúšťaj za hlavu, nie na čelo — na čelo znamená menšie natiahnutie dlhej hlavy. Lakte drž stabilné.","new"],
+ ["Cable triceps pushdown","Triceps","B","Bezpečný, ľahko sa naučí, dobrá kontrola. Ale lakeť pri tele = dlhá hlava skrátená, teda žiadna práca v natiahnutí. Ako <em>doplnok</em> po overhead cviku výborný, ako hlavný tricepsový cvik nedostatočný.","Lakte pri tele a nehýbu sa. Ak sa ti pri poslednom opakovaní dvíhajú, váha je príliš vysoká.",""],
+ ["EZ bar pushdown","Triceps","C","Ten istý pohyb ako cable pushdown, na tom istom stroji, s iným madlom. Rozdiel v aktivácii je zanedbateľný — sú to fakticky dva cviky za cenu jedného stimulu.","Nahraď ho overhead extenziou. Ak chceš striedať madlá, striedaj ich medzi týždňami, nie v rámci jedného tréningu.","cut"],
+ ["Dips","Triceps / prsia","B","Ťažký tlak, ktorý sa dobre preťažuje pridávaním váhy. Zrážka: dlhá hlava opäť pri tele a v hlbokej pozícii vysoká záťaž na predné rameno.","Nechoď hlbšie, než po vodorovné rameno. Mierny predklon = viac prsia, vzpriamený trup = viac triceps.","new"],
+ ["Barbell bent-over row","Chrbát","A","Najlepší cvik na hrúbku chrbta, umožní ťažké váhy a jasnú progresiu. Zrážka za dve veci: vysoká záťaž drieku (systémová únava) a vysoká náročnosť techniky práve u samouka.","Nikdy bližšie než RIR 2. Sériu ukonči, keď sa zmení uhol trupu, nie keď nedáš opakovanie. Krk v predĺžení chrbtice, nepozeraj hore.",""],
+ ["Chest-supported row","Chrbát","A","Rovnaký stimul na medzilopatkové svaly bez záťaže drieku a bez možnosti podvádzať trupom. Lepší pomer stimul/únava než barbell row, horší prenos do celkovej sily.","Ak máš pri barbell rowe pochybnosti o technike, prejdi na tento a nič nestratíš.","new"],
+ ["Single-arm seated cable row","Chrbát","S","Veľký rozsah vrátane protrakcie a retrakcie lopatky, jednostranná práca odstráni silovú asymetriu, kábel drží napätie po celej dráhe, driek je odľahčený.","Nechaj lopatku ísť dopredu v natiahnutí — to je práve tá časť rozsahu, ktorú väčšina ľudí vynechá. Nerotuj trupom.",""],
+ ["Pull-up / chin-up","Chrbát","A","Voľná dráha umožní plný pohyb lopatky, plus vedľajší efekt na úchop a trup. Zrážka za obmedzenú progresiu pri vlastnej váhe — pri 85 kg to nemusí ísť hneď.","Ak nedáš 6, používaj gravitron alebo gumu. Nehádž sa nohami.","new"],
+ ["Fixed lat pulldown","Chrbát","B","Solídny vertikálny ťah, ľahká progresia, bezpečný. Zrážka: fixná dráha obmedzuje pohyb lopatky a hornú časť rozsahu, kde sa lat naťahuje najviac.","Nechaj ramená ísť úplne hore v natiahnutí. Neťahaj bradou k madlu — pohyb končí, keď sú lakte pri tele.",""],
+ ["Vertical row (stroj)","Chrbát","B","Použiteľný, ale robí to isté, čo lat pulldown. V pláne, kde chýbajú celé partie, je duplicita drahá.","Vypustiť. Ak sa ti páči viac než pulldown, nechaj ten a vypusti pulldown — ale nie oba.","cut"],
+ ["Farmer's carry","Chrbát / úchop","S","Úchop, horný trapéz, trup, vzpriamovače, axiálne zaťaženie kostí a trochu kardia — za tri minúty. Najlepší pomer prínos/čas v celom pláne.","Ramená dolu a dozadu, rebrá zaklopené, kráčaj normálne. Nie shrug počas chôdze.","new"],
+ ["DB shrug","Trapéz","B","Priama práca na horný trapéz, ktorý ti chýba. Zrážka za malý rozsah pohybu a za to, že carry dá podobný efekt plus päť ďalších vecí.","Pohyb ide priamo hore, nie dozadu ani do kruhu. Pauza hore 1 sekundu.","new"],
+ ["Dead hang","Úchop","A","Úchop, dekompresia chrbtice a mobilita ramena naraz, za nula nákladov. Zrážka len za to, že sa ťažko progresívne preťažuje.","Ramená nenechaj úplne „vypadnúť“ — drž mierne aktívnu lopatku.","new"],
+ ["Hammer curl","Biceps","A","Neutrálny úchop zaťaží brachialis a brachioradialis, ktoré rozšíria rameno viac než samotný biceps. Šetrný k lakťom, dobre sa preťažuje.","Nešvihaj trupom. Lakte pri tele.",""],
+ ["Preacher curl machine","Biceps","A","Odpor je najvyšší v spodnej, natiahnutej polohe — to je pri bicepse to hlavné. Stroj eliminuje švih úplne.","V spodnej polohe nespúšťaj do voľného pádu, posledných 15° kontroluj. Rameno pred telom znamená skrátenú dlhú hlavu — preto sa oplatí doplniť incline curl.",""],
+ ["Incline DB curl","Biceps","S","Rameno za telom = dlhá hlava bicepsu maximálne natiahnutá pod záťažou. Jediný bežný cvik s touto vlastnosťou a preto najlepší doplnok k preacheru.","Lavička ~45–60°. Nechaj ruku úplne visieť dole, aj keď to na začiatku „ťahá“.","new"],
+ ["DB alternating biceps curl","Biceps","C","Nie je zlý, len redundantný — hammer curl robí to isté lepšie a striedanie rúk zdvojnásobuje čas série pri rovnakom stimule.","Vypustiť. Biceps má v tvojom pláne najviac objemu zo všetkých partií.","cut"],
+ ["DB lateral raise","Ramená","S","Najpriamejší cvik na bočný deltoid, ktorý určuje šírku ramien z čelného pohľadu. Ľahko sa naučí, dá sa robiť veľa.","Ramená drž dolu, nekrč sa. Ak sa pri poslednom opakovaní dvíhaš celým telom, uber váhu — 12–20 opakovaní, nie 8.",""],
+ ["Cable lateral raise","Ramená","S","Kábel dáva odpor od prvého centimetra, kde jednoručka nedáva takmer nič (gravitácia ťahá rovnobežne s ramenom). Iná krivka odporu = nie duplicita, ale doplnok.","Stoj tak, aby kábel viedol spoza tela. Ruka ide do strany, nie dopredu.","new"],
+ ["DB seated shoulder press","Ramená","A","Solídny vertikálny tlak, prirodzená dráha, dobrá progresia. Zrážka: predný deltoid už dostáva prácu z incline pressu, takže marginálny prínos je menší.","Opierka ~80°, nie 90° — mierny sklon je šetrnejší k ramenu. Nezaklápaj driek do preklenutia.",""],
+ ["Reverse pec deck","Ramená","S","Konštantný odpor po celej dráhe, nulové nároky na stabilitu, nedá sa pokaziť švihom — pre zadný deltoid, ktorý zvládne veľmi málo váhy, ideálne.","Lakte mierne pokrčené a vyššie než zápästia. Nesťahuj lopatky k sebe — to prevezme pohyb za zadný deltoid.","new"],
+ ["Face pull","Ramená","A","Zadný deltoid, dolný trapéz a externá rotácia v jednom pohybe. Ak by si mal robiť jediný cvik pre zdravie ramena, je to tento.","Kábel nastav nad úroveň hlavy. Ťahaj k čelu a rotuj predlaktia dozadu — pointa je práve tá rotácia, nie samotný ťah.","new"],
+ ["Hack squat","Nohy","S","Kvadriceps v maximálnom natiahnutí pri hlbokej flexii kolena, fixná dráha ti dovolí ísť blízko zlyhania bez rizika, naučí sa za jeden tréning. Pre samouka lepší štart než veľká činka.","Nohy nižšie na plošine = viac kvadriceps. Choď do hĺbky, kde sa stehná dostanú pod vodorovnú — polovičný drep je polovičný cvik.","new"],
+ ["Smith machine squat","Nohy","A","Ak hack squat nemáte. Zvislá dráha tu neprekáža, drep je prevažne zvislý pohyb. Zrážka za menší nárok na stabilizátory a trup.","Nohy o niečo pred telom. Sleduj, aby si nemal váhu celú na špičkách.","new"],
+ ["Barbell back squat","Nohy","S","Najkomplexnejší cvik na dolné telo a jediný v pláne s priamou axiálnou kompresiou chrbtice — teda jediný, ktorý reálne pôsobí na hustotu kostí drieku a krčka stehennej kosti. Zrážka za náročnosť naučenia.","Nauč sa ho postupne, s prázdnou tyčou v rozcvičke, kým hlavnú prácu robíš na hack squate. Natoč sa zboku. Toto je cieľ na 3–6 mesiacov, nie na budúci týždeň.","new"],
+ ["Romanian deadlift (voľná činka)","Nohy","S","Hamstringy a gluteus v maximálnom natiahnutí, veľká záťaž, výborný prenos do všetkého ostatného. Voľná tyč umožní prirodzený oblúk pohybu, ktorý Smith znemožňuje.","Tyč sa šúcha po stehnách. Bedrá idú dozadu, nie kolená dopredu. Chrbát rovný — pri prvom zaguľatení sériu končíš.","new"],
+ ["Smith Romanian deadlift","Nohy","C","Vzor je správny, prevedenie nie. Zvislá dráha Smithu je v konflikte s oblúkom hip hinge — buď brzdíš tyč o stehná, alebo posúvaš trup dopredu a vzniká strihové zaťaženie drieku.","Nahradiť voľnou činkou. Počítaj s tým, že váha pôjde dole zhruba o 40 % — je to iný cvik.","cut"],
+ ["Seated leg curl","Nohy","S","V sede je bedro ohnuté, takže hamstringy sú predĺžené a odpor ich zasiahne v najväčšom natiahnutí. Pri priamom porovnaní dáva väčší prírastok než ležiaci variant. Rieši najväčšiu dieru tvojho plánu.","Panvu drž pritlačenú k operadlu — ak sa ti dvíha, hamstringy sa skracujú a cvik stráca zmysel. Spúšťaj pomaly, 2–3 sekundy.","new"],
+ ["Lying leg curl","Nohy","A","To isté, ale s vystretým bedrom sú hamstringy skrátené, teda menej záťaže v natiahnutí. Stále veľmi dobrý cvik.","Nedvíhaj boky z podložky. To je jediná chyba, ktorá na tomto stroji stojí za reč.","new"],
+ ["Nordic curl / GHR","Nohy","B","Excentrická práca s vysokou preventívnou hodnotou proti natrhnutiu zadného stehna. Zrážka za to, že sa veľmi ťažko dávkuje a progresívne preťažuje.","Buď kontroluješ celý zostup, alebo cvik nerobíš — padnúť dole nie je opakovanie.","new"],
+ ["Bulgarian split squat","Nohy","A","Kvadriceps, gluteus, gluteus medius a rovnováha naraz — presne to, čo jednonožný leg press nedáva. Vysoký stimul pri malej záťaži, teda šetrný k chrbtici.","Predná noha dosť ďaleko, aby sa koleno nedostávalo ďaleko pred špičku. Váha na celom chodidle, nie na špičke. Mierny predklon = viac gluteus.","new"],
+ ["Machine leg press (jednonožne)","Nohy","B","Bezpečný a umožní veľkú záťaž na kvadriceps a gluteus bez zaťaženia chrbtice. Ale: sedíš, panva je opretá, takže žiadna rovnováha, žiadny gluteus medius, žiadne axiálne zaťaženie pre kosti. A jednonožné prevedenie zdvojnásobuje čas.","Nahradiť Bulgarian split squatom. Ak si ho necháš, rob ho obojnožne a ťažko — jednonožne stráca hlavnú výhodu, ktorou je záťaž.","cut"],
+ ["Machine leg extension","Nohy","A","Jediný cvik, ktorý izoluje kvadriceps a najmä rectus femoris. Bezpečný, ľahko sa preťažuje, výborný ako izolácia na záver.","Rozsah 12–20 opakovaní — ťažké trojky zbytočne zaťažujú patelofemorálny kĺb. Patrí <em>za</em> viackĺbové cviky, nie pred ne.",""],
+ ["45° back extension","Nohy / driek","A","Gluteus, hamstringy a vzpriamovače v jednom, s veľmi nízkou systémovou únavou. Trénuje driek cielene namiesto toho, aby ho iba unavoval.","Pohyb z bedra, nie z chrbtice. V hornej polohe stlač zadok a zastav — nechoď do preklenutia drieku.","new"],
+ ["Standing calf raise","Lýtka","S","Gastrocnemius prechádza cez koleno — v stoji je natiahnutý a pracuje naplno. Bez tohto cviku trénuješ presne polovicu lýtka.","Plný rozsah: päta úplne dole, pauza 1 s v natiahnutí, potom hore. Väčšina ľudí robí pol centimetra a veľa váhy.","new"],
+ ["Machine seated calf raise","Lýtka","B","Správna voľba na soleus, ktorý má vysoký podiel pomalých vlákien a znesie veľa opakovaní. Zrážka len za to, že gastrocnemius pri ňom takmer nepracuje — takže sám o sebe nestačí.","12–20 opakovaní, pauza v natiahnutí. Dobrý kandidát na pauzy medzi sériami v deň ramien.",""],
+ ["Ab wheel rollout","Core","S","Anti-extension so záťažou v maximálnom natiahnutí, plynulá progresia od kolien po stoj. Najlepší brušný cvik, aký sa dá robiť bez stroja.","Rebrá zaklopené, driek nesmie preklenúť. Choď len tak ďaleko, ako udržíš rovný driek — a tú vzdialenosť postupne zväčšuj.","new"],
+ ["Hanging leg raise","Core","A","Brucho, úchop a dekompresia chrbtice v jednom. Zrážka za to, že bez kontroly panvy sa z toho stane cvik na flexory bedra.","Zaklop panvu dozadu skôr, než začneš dvíhať nohy. Ak sa hojdáš, cvik nerobíš.","new"],
+ ["Cable crunch","Core","A","Jediný brušný cvik, kde vieš týždeň po týždni pridávať kilá — teda jediný skutočne progresívne preťažiteľný.","Pohyb je zaguľatenie chrbtice, nie ohyb v bedrách. Boky sa nehýbu.","new"],
+ ["Pallof press","Core","A","Jediný rozumne dávkovateľný anti-rotačný cvik. Šikmé svaly a quadratus lumborum nedostanú z tvojho plánu inak nič.","Nejde o to zatlačiť ďaleko, ale o to nedovoliť trupu rotovať. Ak sa hýbeš, uber váhu.","new"]
+];
+
+const DAYS=[
+ {n:"Deň 1",t:"Prsia + triceps + zadný deltoid",mins:"~50 min",rows:[
+  ["DB incline bench press","4","6–10","1–2","2–3 min","Lavička 30°. Prvý cvik dňa, tu je najviac energie.","keep"],
+  ["Machine chest press <span class='small'>al. flat DB press</span>","3–4","8–12","1–2","2 min","Ťažký horizontálny tlak — nahrádza low cable crossover.","new"],
+  ["Machine fly (pec deck)","3","10–15","0–1","90 s","Izolácia po tlakoch. Lakte zafixované.","keep"],
+  ["Overhead cable triceps extension","3","8–12","1","90 s","Rameno nad hlavou = dlhá hlava v natiahnutí. Nahrádza EZ bar pushdown.","new"],
+  ["Cable triceps pushdown","3","10–15","0–1","75 s","Zostáva ako doplnok, už nie ako hlavný tricepsový cvik.","keep"],
+  ["Reverse pec deck","3","12–20","0–1","60 s","Protiváha k trom tlakom. Ľahko a veľa opakovaní.","new"],
+  ["<em>V pauzách:</em> Pallof press","2","10 / strana","—","—","Anti-rotácia, nestojí extra čas.","new"]
+ ]},
+ {n:"Deň 2",t:"Chrbát + biceps + úchop",mins:"~50 min",rows:[
+  ["Barbell bent-over row <span class='small'>al. chest-supported row</span>","3–4","6–10","2","2–3 min","Nikdy bližšie než RIR 2. Krk v predĺžení chrbtice.","keep"],
+  ["Lat pulldown <span class='small'>al. pull-up</span>","3–4","8–12","1","2 min","Nechaj ramená ísť úplne hore v natiahnutí.","keep"],
+  ["Single-arm seated cable row","3","10–15","1","90 s","Plný rozsah lopatky. Najlepší chrbtový cvik v pláne.","keep"],
+  ["DB shrug","3","10–15","0–1","75 s","Horný trapéz — v pláne úplne chýbal.","new"],
+  ["Hammer curl","3","8–12","1","90 s","Brachialis a brachioradialis.","keep"],
+  ["Preacher curl machine","2","10–15","0–1","75 s","Znížené z 3–4 sérií — biceps mal najviac objemu z celého plánu.","mod"],
+  ["Farmer's carry","2","30–40 m","—","90 s","Najťažšie jednoručky, ktoré udržíš. Úchop + trup + kosti.","new"],
+  ["<em>V pauzách:</em> ab wheel rollout","3","8–15","1–2","—","Anti-extension. Alternatíva: cable crunch.","new"]
+ ]},
+ {n:"Deň 3",t:"Ramená + hamstringy + core",mins:"~48 min",rows:[
+  ["DB seated shoulder press","3","6–10","1–2","2 min","Opierka ~80°, nie kolmo.","keep"],
+  ["DB lateral raise","4","12–20","0–1","75 s","Zvýšené z 3 na 4 série. Ľahšie, viac opakovaní.","mod"],
+  ["Cable lateral raise","3","12–20","0–1","60 s","Iná krivka odporu než jednoručka — odpor od prvého cm.","new"],
+  ["Face pull","3","15–20","0–1","60 s","Zadný deltoid + externá rotácia. Kábel nad hlavou.","new"],
+  ["Seated leg curl","3","10–15","0–1","90 s","Druhý dotyk hamstringov v týždni. Panvu drž pri operadle.","new"],
+  ["45° back extension","3","10–15","1–2","75 s","Gluteus + hamstringy + cielený tréning drieku.","new"],
+  ["Hanging leg raise","3","8–15","1","60 s","Core + úchop. Panvu zaklop skôr, než dvihneš nohy.","new"],
+  ["<em>V pauzách:</em> seated calf raise","3","12–20","0","—","Soleus. Presunuté sem z dňa nôh.","move"]
+ ]},
+ {n:"Deň 4",t:"Nohy + lýtka",mins:"~55 min",rows:[
+  ["Hack squat <span class='small'>al. Smith squat</span>","4","6–10","1–2","2–3 min","Drepový vzor — v pláne chýbal. Stehná pod vodorovnú.","new"],
+  ["Romanian deadlift <span class='small'>voľná činka / jednoručky</span>","3–4","8–12","2","2 min","Preč zo Smithu. Váha pôjde dole o ~40 %, je to iný cvik.","mod"],
+  ["Seated leg curl","3","10–15","0–1","90 s","Knee flexion — najväčšia diera plánu.","new"],
+  ["Bulgarian split squat","2","8–12 / nohu","1–2","90 s","Nahrádza jednonožný leg press. Rovnováha a gluteus medius.","new"],
+  ["Machine leg extension","3","12–20","0","60 s","Presunuté dozadu — izolácia patrí za viackĺbové cviky.","move"],
+  ["Standing calf raise","4","8–15","0–1","75 s","Gastrocnemius — v pláne úplne chýbal. Plný rozsah, pauza dole.","new"],
+  ["<em>V rozcvičke:</em> 2 × 10 pogo hops","2","10","—","—","Nárazový podnet pre kosti. 60 sekúnd.","new"]
+ ]}
+];
+
+const DAYS3=[
+ {n:"Deň A",t:"Tlak — prsia, ramená, triceps",mins:"~55 min",rows:[
+  ["DB incline bench press","4","6–10","1–2","2–3 min","","keep"],
+  ["Machine chest press","3","8–12","1–2","2 min","","new"],
+  ["Machine fly (pec deck)","3","10–15","0–1","90 s","","keep"],
+  ["DB lateral raise","4","12–20","0–1","75 s","Presunuté sem z dňa ramien.","move"],
+  ["Overhead cable triceps extension","3","8–12","1","90 s","","new"],
+  ["Reverse pec deck","3","12–20","0–1","60 s","","new"]
+ ]},
+ {n:"Deň B",t:"Ťah — chrbát, zadný deltoid, biceps",mins:"~55 min",rows:[
+  ["Barbell bent-over row","3","6–10","2","2–3 min","","keep"],
+  ["Lat pulldown","3","8–12","1","2 min","","keep"],
+  ["Single-arm seated cable row","3","10–15","1","90 s","","keep"],
+  ["Face pull","3","15–20","0–1","60 s","","new"],
+  ["Hammer curl","3","8–12","1","90 s","","keep"],
+  ["Preacher curl machine","2","10–15","0–1","75 s","","keep"],
+  ["Farmer's carry","2","30–40 m","—","90 s","","new"]
+ ]},
+ {n:"Deň C",t:"Nohy + core",mins:"~58 min",rows:[
+  ["Hack squat","4","6–10","1–2","2–3 min","","new"],
+  ["Romanian deadlift (voľná činka)","3","8–12","2","2 min","","mod"],
+  ["Seated leg curl","4","10–15","0–1","90 s","4 série — pri 3 tréningoch je to jediný dotyk hamstringov.","new"],
+  ["Bulgarian split squat","2","8–12 / nohu","1–2","90 s","","new"],
+  ["Standing calf raise","3","8–15","0–1","75 s","","new"],
+  ["Machine seated calf raise","2","12–20","0","60 s","","keep"],
+  ["Hanging leg raise","3","8–15","1","60 s","","new"]
+ ]}
+];
+
+const SUBS=[
+ ["DB incline bench press","Barbell incline press","Incline machine press","Pri barbell verzii pozor na fixné zápästia — u niektorých dráždi rameno viac než jednoručky."],
+ ["Machine chest press","Flat DB bench press","Dips (mierny predklon)","Pri dipoch nechoď hlbšie než po vodorovné rameno."],
+ ["Machine fly (pec deck)","Cable fly v stoji","Ležiaci DB fly","Pri DB fly zmizne napätie hore — zastav skôr, než sú ruky nad hrudníkom."],
+ ["Overhead cable triceps extension","EZ bar skullcrusher za hlavu","Jednoručková overhead extenzia jednoruč","Vždy musí byť rameno nad hlavou, inak strácaš celý zmysel cviku."],
+ ["Cable triceps pushdown","Pushdown s lanom","Kickback s káblom","Kickback je slabší — použi len ako poslednú možnosť."],
+ ["Reverse pec deck","Cable rear delt fly (skrížený)","Prone incline DB reverse fly","Pri DB verzii ľahká váha a plný rozsah, nie švih."],
+ ["Barbell bent-over row","Chest-supported row","T-bar row","Chest-supported je lepšia voľba vždy, keď máš pochybnosti o technike."],
+ ["Lat pulldown","Pull-up / chin-up (aj s gumou)","Kľačiaci lat pulldown s káblom","Voľná dráha je lepšia — ak vieš, uprednostni zhyb."],
+ ["Single-arm seated cable row","Seated cable row obojruč","Jednoručkový row v predklone s oporou","Pri obojručnej verzii stratíš protrakciu lopatky — vedome ju dorob."],
+ ["DB shrug","Barbell shrug","Trap bar shrug / farmer's carry","Pohyb hore, nie do kruhu."],
+ ["Hammer curl","Cable rope hammer curl","Reverse curl s EZ tyčou","Reverse curl viac zaťaží brachioradialis, menej biceps."],
+ ["Preacher curl machine","Incline DB curl","Cable curl s káblom zospodu","Incline curl je vlastne lepší — dlhá hlava v natiahnutí."],
+ ["Farmer's carry","Suitcase carry (jedna ruka)","Trap bar carry","Suitcase carry pridá anti-rotáciu — striedaj strany."],
+ ["DB seated shoulder press","Machine shoulder press","Landmine press","Landmine je najšetrnejší k ramenu, ak ťa niečo dráždi."],
+ ["DB lateral raise","Cable lateral raise","Machine lateral raise","Stroj drží odpor konštantný — ak ho máte, používaj ho."],
+ ["Cable lateral raise","Lateral raise s gumou","DB lateral raise v miernom predklone","Guma dáva najviac odporu hore, kábel po celej dráhe."],
+ ["Face pull","Reverse pec deck","Band pull-apart","Band pull-apart je slabší, ale dá sa robiť aj v pauzách."],
+ ["Hack squat","Smith machine squat","Leg press (obojnožne, ťažko)","Leg press je najhoršia z týchto možností — nedáva axiálne zaťaženie."],
+ ["Romanian deadlift (voľná činka)","Jednoručkový RDL","45° back extension so záťažou","Back extension je bezpečnejšia, ale s menšou záťažou."],
+ ["Seated leg curl","Lying leg curl","Nordic curl","Sediaci je najlepší, ležiaci druhá voľba, Nordic tretia."],
+ ["Bulgarian split squat","Walking lunge","Step-up na debnu","Step-up je najšetrnejší ku kolenu, ak ťa niečo dráždi."],
+ ["Machine leg extension","Sissy squat","Reverse Nordic curl","Reverse Nordic zaťaží rectus femoris s vystretým bedrom — silný doplnok."],
+ ["Standing calf raise","Calf raise na leg presse","Výpony na schode s jednoručkou","Vždy plný rozsah a pauza v natiahnutí."],
+ ["45° back extension","Hip thrust","Reverse hyperextension","Hip thrust dá viac gluteus, back extension viac vzpriamovače."],
+ ["Hanging leg raise","Captain's chair leg raise","Ležiaci reverse crunch","Ležiaca verzia je najľahšia — začni tam, ak sa hojdáš."],
+ ["Ab wheel rollout","Cable crunch","Dead bug so záťažou","Cable crunch je jediný, kde vieš pridávať kilá."],
+ ["Pallof press","Suitcase carry","Bočný plank so záťažou","Vždy ide o to nedovoliť rotáciu, nie o rozsah pohybu."]
+];
+
+const TECH=[
+ {d:"Deň 1 — Prsia + triceps + zadný deltoid",ex:[
+  {n:"DB incline bench press",k:["Lavička 30–35°, nie 45°. Nad 35° prevezme pohyb predný deltoid.","Lakte ~45° od trupu. Zápästia priamo nad lakťami po celú dráhu.","Dole ísť po hranicu, kde cítiš ťah v prsníku, nie hlbšie za rameno."],
+   m:"Príliš strmá lavička a lakte roztiahnuté do 90°. Spoznáš to tak, že po sérii ťa pália predné ramená viac než prsia, a druhý deň ťa bolia ramená, nie prsia.",
+   c:"Na vrchole pohybu (hore) vedome stlač prsníky k sebe a podrž pol sekundy. Ak nevieš nájsť to napätie, váha je príliš vysoká alebo je uhol zlý."},
+  {n:"Machine chest press / flat DB press",k:["Sedadlo nastav tak, aby madlá boli vo výške stredu hrudníka.","Lopatky stiahnuté a pritlačené k opierke po celú sériu.","Nezablokuj lakte úplne hore — napätie má zostať."],
+   m:"Nastavenie sedadla príliš vysoko, takže tlačíš šikmo hore a robíš z toho tlak na ramená. Spoznáš to podľa toho, že madlá máš pri kľúčnych kostiach, nie pri bradavkách.",
+   c:"Ak sa ti počas série lopatky „odlepia“ od opierky, prsníky pracujú menej. Skús jednu sériu s vedomým zatlačením lopatiek — rozdiel v pocite je okamžitý."},
+  {n:"Machine fly (pec deck)",k:["Lakte mierne pokrčené a v tomto uhle zamrznuté.","Ramená v jednej rovine s madlami, nie vyššie.","V natiahnutí choď len po hranicu pohodlia — nie maximálne dozadu."],
+   m:"Tlačenie madiel rukami namiesto pohybu z ramena. Spoznáš to tak, že ti v priebehu série ubúda uhol v lakti — začínaš s vystretou rukou, končíš s pokrčenou. Vtedy si postupne premenil fly na tlak.",
+   c:"Zavri oči na jednu sériu a sústreď sa len na to, či napätie ide zvnútra hrudníka smerom k pazuche. Ak to cítiš v prednom ramene, ramená máš príliš vysoko."},
+  {n:"Overhead cable triceps extension",k:["Chrbtom k stroju, kábel nastavený nízko, lano pretiahni ponad hlavu.","Lakte pri hlave a smerujú dopredu, počas celého pohybu sa nehýbu.","Trup mierne predklonený, aby bola dráha priama."],
+   m:"Rozťahovanie lakťov do strán, čím sa zmenší natiahnutie dlhej hlavy. Spoznáš to podľa toho, že si v spodnej polohe nepociťuješ ťah pozdĺž zadnej strany ramena až k pazuche.",
+   c:"V spodnej polohe (ruky za hlavou) musíš cítiť <strong>ťah</strong>, nie len prácu. Ak ho necítiš, buď máš rozťahané lakte, alebo nejdeš dosť hlboko."},
+  {n:"Cable triceps pushdown",k:["Lakte pri tele a fixné, hýbe sa len predlaktie.","Trup vzpriamený, mierny predklon je v poriadku, ale nesmie sa počas série meniť.","Hore nechaj predlaktia vyjsť nad vodorovnú — tam začína rozsah."],
+   m:"Naklonenie sa celou váhou nad kábel a tlačenie hmotnosťou tela. Spoznáš to tak, že sa v druhej polovici série pri každom opakovaní hýbeš trupom hore-dole.",
+   c:"Postav sa o krok ďalej od stroja a uber váhu o 20 %. Ak zrazu cítiš triceps oveľa viac, predtým si ho z veľkej časti obchádzal."},
+  {n:"Reverse pec deck",k:["Hrudník opretý o podložku, lakte mierne pokrčené a vyššie než zápästia.","Pohyb končí, keď sú ruky v jednej rovine s trupom — nie za ňou.","Ľahká váha, 12–20 opakovaní, tempo pomalé."],
+   m:"Sťahovanie lopatiek k sebe. Vtedy pohyb prevezmú rhomboidy a stredný trapéz a zadný deltoid, kvôli ktorému to robíš, ostane nezaťažený. Spoznáš to tak, že cítiš prácu medzi lopatkami, nie vzadu na ramene.",
+   c:"Predstav si, že ruky sú len laná a ťaháš lakťami von do strán. Lopatky nechaj úmyselne uvoľnené. Rozdiel v pocite je veľmi zreteľný."}
+ ]},
+ {d:"Deň 2 — Chrbát + biceps + úchop",ex:[
+  {n:"Barbell bent-over row",k:["Trup ~30–45° od vodorovnej, kolená mierne pokrčené, bedrá dozadu.","Tyč ťahaj k spodnej časti hrudníka až k pupku, nie k prsníkom.","Krk v predĺžení chrbtice — pozeraj na bod ~2 m pred sebou na zemi."],
+   m:"Postupné narovnávanie trupu počas série a pozeranie sa hore do zrkadla. Prvé znamená, že si prešiel na ľahší cvik uprostred série; druhé zaťažuje krčnú chrbticu v hyperextenzii. <strong>Natoč sa zboku — toto je cvik, kde je video u samouka povinné.</strong>",
+   c:"Na konci série musíš cítiť únavu medzi lopatkami a v širokom svale, nie v drieku. Ak ťa najviac bolí driek, buď je váha vysoká, alebo sa trup dvíha."},
+  {n:"Lat pulldown",k:["Kolená pevne pod valcom, trup mierne vzad (~15°) a v tom uhle zostáva.","Hore nechaj ramená úplne vyjsť — lopatka sa má rotovať nahor.","Ťahaj lakťami k bokom, nie rukami k bradavkám."],
+   m:"Ťahanie rukami a hojdanie trupu. Spoznáš to tak, že v hornej polohe nemáš úplne vystreté ruky a lopatky ostávajú stiahnuté — vynechávaš práve tú časť rozsahu, kde sa lat naťahuje.",
+   c:"Skús jednu sériu s 30 % nižšou váhou, dvojsekundovým zostupom a plným natiahnutím hore. Ak zrazu cítiš širokú svalovú prácu pod pazuchou, predtým ti chýbal rozsah."},
+  {n:"Single-arm seated cable row",k:["Voľná ruka na kolene alebo na opierke, trup sa nerotuje.","V natiahnutí nechaj lopatku ísť dopredu (protrakcia), potom ťahaj.","Lakeť ide tesne popri trupe dozadu, nie do strany."],
+   m:"Rotovanie trupu za rukou. Vyzerá to ako väčší rozsah, ale rozsah sa deje v chrbtici, nie v ramene. Spoznáš to tak, že v natiahnutí máš rameno otočené k stroju.",
+   c:"Sadni si bokom k zrkadlu. Ak sa ti počas série hýbe hrudná kosť do strán, rotuješ."},
+  {n:"DB shrug",k:["Ramená hore priamo k ušiam, nie dozadu ani do kruhu.","Pauza hore 1 sekundu — bez nej je to len hojdanie.","Dole nechaj ramená úplne klesnúť."],
+   m:"Krúženie ramenami. Nepridá to nič, a v hornej zadnej fáze zbytočne zaťažuje rameno.",
+   c:"Ak necítiš prácu hore na trapéze pri krku, pravdepodobne máš príliš veľkú váhu a hýbeš sa celým telom."},
+  {n:"Hammer curl",k:["Neutrálny úchop (palce hore), lakte pri tele.","Trup nehybný — chrbtom sa neopieraj o nič, čo ti dovolí švihať.","Dole nechaj ruku úplne vystrieť."],
+   m:"Švihanie trupom a zdvíhanie lakťov dopredu. Spoznáš to tak, že sa ti na konci pohybu lakte dostávajú pred trup — vtedy pohyb prevzal predný deltoid.",
+   c:"Postav sa chrbtom k stene. Ak sa počas série od steny odlepíš, švihal si."},
+  {n:"Preacher curl machine",k:["Podpazušie pevne na podložke, rameno sa nedvíha.","Dole kontroluj posledných 15° — nepadaj do plného vystretia.","Hore nechoď až tam, kde napätie zmizne."],
+   m:"Odraz zo spodnej polohy. Vyzerá to ako viac opakovaní, ale je to jediná vec, ktorá pri tomto cviku môže dráždiť úpon bicepsu — a distálne bicepsové problémy sú dlhé.",
+   c:"Nastav si tempo 1 s hore, 1 s pauza, 3 s dole. Ak pri tomto tempe nedáš pôvodný počet opakovaní, predtým si sa odrážal."},
+  {n:"Farmer's carry",k:["Zdvihni jednoručky ako deadlift — bedrami, nie chrbtom.","Ramená dolu a dozadu, rebrá zaklopené, hrudník hore.","Kráčaj normálnym krokom, dýchaj."],
+   m:"Krčenie ramien počas chôdze a zadržiavanie dychu. Prvé z toho robí zbytočne unavujúci shrug, druhé ti vezme polovicu vzdialenosti.",
+   c:"Cieľ je, aby ti prvý zlyhal <strong>úchop</strong>, nie chrbát ani dych. Ak ti prvý zlyháva chrbát, váha je príliš vysoká alebo držíš zlé postavenie."}
+ ]},
+ {d:"Deň 3 — Ramená + hamstringy + core",ex:[
+  {n:"DB seated shoulder press",k:["Opierka ~80°, mierne odklonená — šetrnejšie k ramenu než kolmá.","Jednoručky drž tak, aby lakte boli mierne pred rovinou trupu, nie úplne do strán.","Rebrá zaklopené — driek sa nesmie preklenúť."],
+   m:"Preklenutie drieku, aby sa dalo zdvihnúť viac. Spoznáš to tak, že ti pri poslednom opakovaní vyskočí hrudník dopredu a chrbát sa oblúkom odlepí od opierky — vtedy sa z toho stáva incline press.",
+   c:"Pritlač driek k opierke a udrž ho tam. Ak zrazu nedáš rovnaký počet opakovaní, predtým ti pomáhal chrbát."},
+  {n:"DB lateral raise",k:["Ľahká váha, 12–20 opakovaní. Ramená dolu.","Ruky idú do strany a mierne dopredu (rovina lopatky), nie striktne do boku.","Zastav vo výške ramien — vyššie preberá pohyb trapéz."],
+   m:"Príliš ťažká váha a švih z nôh. Spoznáš to tak, že sa pri každom opakovaní nadvihneš na špičkách alebo sa ti krčia ramená k ušiam.",
+   c:"Sadni si na lavičku bez opierky. Ak zrazu nedáš ani polovicu opakovaní, celý cvik si robil švihom."},
+  {n:"Cable lateral raise",k:["Kábel vedie spoza tela, madlo chytíš vzdialenejšou rukou.","Ruka ide do strany po oblúku, mierne pokrčený lakeť.","V spodnej polohe napätie neuvoľňuj — v tom je rozdiel oproti jednoručke."],
+   m:"Postavenie príliš blízko stroja, čím sa v spodnej polohe stratí odpor a zopakuje sa nevýhoda jednoručky.",
+   c:"V najspodnejšej polohe musíš cítiť ťah v bočnom deltoide. Ak necítiš nič, odstúp o pol kroka."},
+  {n:"Face pull",k:["Kábel nad úrovňou hlavy, lano chytíš palcami dozadu.","Ťahaj k čelu a zároveň rotuj predlaktia dozadu, akoby si robil dvojité „biceps pózu“.","Ľahká váha, 15–20 opakovaní."],
+   m:"Ťahanie k hrudníku namiesto k čelu a bez rotácie. Vtedy z toho zostane obyčajný horizontálny ťah a externá rotácia — pointa cviku — vypadne.",
+   c:"Na konci pohybu musíš mať lakte vyššie než zápästia a dlane smerovať dopredu. Ak nie, nerotoval si."},
+  {n:"Seated leg curl",k:["Panva pevne pri operadle, valec tesne nad päty.","Bedrový pás dotiahni — ak sa ti panva dvíha, hamstringy sa skracujú.","Spúšťaj 2–3 sekundy, v natiahnutí neuvoľni."],
+   m:"Nadvihovanie panvy a bokov, aby sa dalo pretiahnuť viac váhy. Spoznáš to tak, že sa ti na konci série dvíha zadok zo sedadla.",
+   c:"Musíš cítiť ťah po zadnej strane stehna od kolena hore. Ak cítiš prácu len tesne za kolenom, skús pomalší zostup a menšiu váhu."},
+  {n:"45° back extension",k:["Podložka na úrovni panvových kostí, nie na bruchu.","Pohyb ide z bedra — trup a chrbtica ostávajú v jednej línii.","Hore zastav v rovine, nechoď do preklenutia."],
+   m:"Hyperextenzia hore. Cvik sa volá „back extension“, takže ľudia inštinktívne idú do prehnutia — a tým zaťažujú kĺbne výbežky drieku namiesto svalu.",
+   c:"Ak stlačíš zadok a zastavíš v rovine, mala by pracovať zadná strana stehna a zadok. Ak to cítiš iba v drieku, buď si podložku nastavil vysoko, alebo ideš do prehnutia."},
+  {n:"Hanging leg raise",k:["Najprv zaklop panvu dozadu, až potom dvíhaj nohy.","Nehojdaj sa — ak sa hojdáš, cvik nerobíš.","Dole spúšťaj pomaly, nespadni."],
+   m:"Dvíhanie nôh bez zaklopenia panvy. Vtedy pracujú flexory bedra, nie brucho — a je to zároveň ťah do preklenutia drieku.",
+   c:"Skús variant s pokrčenými kolenami a vedomým zaklopením panvy. Ak zrazu cítiš spodnú časť brucha, predtým si robil cvik na flexory bedra."}
+ ]},
+ {d:"Deň 4 — Nohy + lýtka",ex:[
+  {n:"Hack squat",k:["Chodidlá na šírku ramien, mierne vytočené, na strede plošiny.","Choď do hĺbky, kde sú stehná pod vodorovnou.","Chrbát pritlačený k opierke po celý čas, päty na plošine."],
+   m:"Polovičný rozsah. Je to najčastejšia chyba na drepových strojoch — váha vyzerá impozantne, ale kvadriceps nikdy nedostane natiahnutie, kvôli ktorému cvik robíš.",
+   c:"Ubere váhu na polovicu a choď tak hlboko, ako vieš pri pätách na plošine. Ak cítiš výrazne väčšiu prácu v stehnách než predtým, robil si polovičný cvik."},
+  {n:"Romanian deadlift (voľná činka)",k:["Tyč sa šúcha po stehnách po celú dráhu — držíš ju pri tele.","Bedrá idú <em>dozadu</em>, kolená sa ohýbajú len minimálne.","Ideš dole len po hranicu, kde udržíš rovný chrbát — u väčšiny ľudí to je do polovice holene."],
+   m:"Vnímanie RDL ako predklonu namiesto posunu bedier dozadu. Spoznáš to tak, že tyč sa ti počas pohybu vzdiali od nôh a driek začne guľatieť. Druhá častá chyba: ísť na zem za každú cenu.",
+   c:"Musíš cítiť silný ťah v zadnej strane stehna, kým je chrbát ešte rovný. <strong>Vo chvíli, keď ťah zmizne a začne sa ohýbať chrbát, si prekročil svoj rozsah</strong> — tam sa zastav a odtiaľ ťahaj."},
+  {n:"Bulgarian split squat",k:["Zadná noha na lavičke, predná dosť ďaleko, aby koleno neprechádzalo výrazne pred špičku.","Váha na celom chodidle prednej nohy, hlavne na päte.","Mierny predklon trupu = viac gluteus; vzpriamený trup = viac kvadriceps."],
+   m:"Príliš krátky krok, takže sa všetko presunie na koleno prednej nohy a na špičku. Spoznáš to podľa tlaku v prednej časti kolena namiesto práce v stehne a zadku.",
+   c:"Prvý týždeň to bude o rovnováhe, nie o svaloch. Prichyť sa jednou rukou stojana. Keď zvládneš 2 × 10 bez podpory, začni pridávať jednoručky."},
+  {n:"Machine leg extension",k:["Valec tesne nad členkom, chrbát opretý.","12–20 opakovaní, pauza hore 1 s.","Spúšťaj kontrolovane, neodpúšťaj váhu."],
+   m:"Príliš ťažká váha a švih z bokov. Pri tomto cviku to okrem zbytočného rizika pre koleno nič nepridá.",
+   c:"Ak sa pri poslednom opakovaní dvíhaš zo sedadla alebo sa držíš madiel silou, uber váhu."},
+  {n:"Standing calf raise",k:["Päta úplne dole, pauza 1 s v natiahnutí.","Hore úplne na špičky, pauza pol sekundy.","Koleno vystreté — v tom je celý rozdiel oproti seated verzii."],
+   m:"Malý rozsah a odrážanie sa. Lýtko má krátky rozsah pohybu, takže vynechanie natiahnutia znamená vynechanie väčšiny cviku. Spoznáš to podľa toho, že sa pohyb podobá skôr na drobné pruženie.",
+   c:"Rátaj tempo nahlas: <strong>1 dole – pauza – hore – pauza</strong>. Ak zrazu nedáš ani polovicu opakovaní, predtým si sa odrážal."},
+  {n:"Machine seated calf raise",k:["Koleno ohnuté ~90°, podložka na spodnej časti stehna.","Plný rozsah, pauza dole.","12–20 opakovaní, vyššie počty sú v poriadku."],
+   m:"Rovnaká ako pri stojacej verzii — malý rozsah. Soleus znesie veľa opakovaní, takže tu je najmenší dôvod šetriť rozsahom.",
+   c:"Ak po sérii necítiš pálenie hlboko v lýtku (nie hore pod kolenom), pravdepodobne ti chýba rozsah."}
+ ]}
+];
+
+const LONG=[
+ {t:"Kardio — zóna 2",s:"part",p:30,now:"40 min týždenne pri ~6,3 MET, čo je spodná hranica zóny 2.",do:"Predĺž chôdzu po tréningu na 20 min a zdvihni na 5 km/h pri sklone 12 % v dva dni. Zvyšok dobehni krokmi mimo posilky."},
+ {t:"Práca na VO₂max",s:"no",p:0,now:"Nič. VO₂max je jeden z najsilnejších jednotlivých prediktorov celkovej mortality.",do:"12 min po tréningu ramien: 10 × (30 s tvrdo / 30 s ľahko) na bicykli. Raz týždenne stačí."},
+ {t:"Sila úchopu",s:"no",p:10,now:"Žiadny cielený tréning. Stroje a preacher curl nemajú takmer žiadnu nároku na úchop.",do:"Farmer's carry 2 × 30–40 m na koniec dňa chrbta + dead hang. Prestaň používať trhačky na ľahších sériách."},
+ {t:"Mobilita a rozsah",s:"no",p:10,now:"Žiadna cielená práca. Rozcvička je iba pás.",do:"Bedrá, hrudná chrbtica, ramená, členky — do rozcvičky a do pauzy medzi sériami. Nula extra času."},
+ {t:"Jednonožná stabilita",s:"part",p:25,now:"Jednonožný leg press, ale <em>v sede</em> — panva je opretá, stabilizátory bedra nerobia nič.",do:"Bulgarian split squat namiesto leg pressu. Otestuj sa: stoj na jednej nohe so zavretými očami, cieľ 30 s."},
+ {t:"Hustota kostí",s:"part",p:30,now:"Iba Smith RDL a barbell row dávajú niečo axiálne. Leg press a stroje v sede nedávajú kostiam nič.",do:"Farmer's carry + 2 × 10 pogo hopov pred dňom nôh. Dlhodobo sa nauč barbell back squat."}
+];
+
+/* ═══════════ VYKRESĽOVANIE ═══════════ */
+
+function svg(w,h,inner){return '<svg viewBox="0 0 '+w+' '+h+'" role="img" preserveAspectRatio="xMidYMin meet">'+inner+'</svg>';}
+
+/* Graf 1 + 6: objem, segmentované bloky */
+function volumeChart(el,showAfter){
+  const W=400,rowH=showAfter?26:23,padT=22,padL=112,padR=10,maxSets=22;
+  const H=padT+VOL.length*rowH+8, plotW=W-padL-padR, u=plotW/maxSets;
+  let s="";
+  // mriežka
+  for(let i=0;i<=maxSets;i+=5){const x=padL+i*u;
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+(padT-8)+'" x2="'+x.toFixed(1)+'" y2="'+(H-6)+'" stroke="'+C.line+'" stroke-width=".5"/>';
+    s+='<text x="'+x.toFixed(1)+'" y="'+(padT-12)+'" font-size="8" fill="'+C.ink3+'" text-anchor="middle" font-family="monospace">'+i+'</text>';}
+  VOL.forEach((r,i)=>{
+    const y=padT+i*rowH, name=r[0], w4=r[3], mn=r[4], mx=r[5], af=r[6];
+    // pásmo
+    s+='<rect x="'+(padL+mn*u).toFixed(1)+'" y="'+(y+1)+'" width="'+((mx-mn)*u).toFixed(1)+'" height="'+(rowH-4)+'" fill="'+C.band+'" opacity=".75"/>';
+    // popis
+    s+='<text x="'+(padL-6)+'" y="'+(y+rowH/2+1)+'" font-size="8.5" fill="'+C.ink+'" text-anchor="end" font-weight="600">'+esc(name)+'</text>';
+    const bars=showAfter?[[w4,C.old,y+1,7],[af,C.p25,y+10,7]]:[[w4,C.p20,y+2,8],[r[3]*0.75,"#9db4cf",y+11,5]];
+    bars.forEach(b=>{
+      const n=Math.round(b[0]*2)/2, full=Math.floor(n), half=n-full>=0.5;
+      for(let k=0;k<full;k++) s+='<rect x="'+(padL+k*u+0.6).toFixed(1)+'" y="'+b[2]+'" width="'+(u-1.2).toFixed(1)+'" height="'+b[3]+'" fill="'+b[1]+'" rx="1"/>';
+      if(half) s+='<rect x="'+(padL+full*u+0.6).toFixed(1)+'" y="'+b[2]+'" width="'+(u/2-1).toFixed(1)+'" height="'+b[3]+'" fill="'+b[1]+'" rx="1" opacity=".65"/>';
+      s+='<text x="'+(padL+Math.max(n,0.4)*u+3).toFixed(1)+'" y="'+(b[2]+b[3]-0.5)+'" font-size="7.5" font-family="monospace" fill="'+C.ink2+'">'+fx(b[0])+'</text>';
+    });
+  });
+  el.innerHTML=svg(W,H,s);
+}
+
+/* Graf 2: radar */
+function radarChart(el){
+  const W=400,H=360,cx=200,cy=178,R=118,n=RADAR.ax.length;
+  const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n,r=R*v/10;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  let s="";
+  for(let g=2;g<=10;g+=2){let d="";for(let i=0;i<n;i++){const p=pt(i,g);d+=(i?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);}
+    s+='<path d="'+d+'Z" fill="none" stroke="'+C.line+'" stroke-width=".7"/>';}
+  for(let i=0;i<n;i++){const p=pt(i,10);s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="'+C.line+'" stroke-width=".7"/>';}
+  const poly=(vals,col,fill,sw)=>{let d="";vals.forEach((v,i)=>{const p=pt(i,v);d+=(i?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);});
+    return '<path d="'+d+'Z" fill="'+col+'" fill-opacity="'+fill+'" stroke="'+col+'" stroke-width="'+sw+'" stroke-linejoin="round"/>';};
+  s+=poly(RADAR.now,C.p05,.28,1.6)+poly(RADAR.opt,C.p25,.16,2);
+  RADAR.opt.forEach((v,i)=>{const p=pt(i,v);s+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4" fill="'+C.p25+'"/>';});
+  RADAR.ax.forEach((lab,i)=>{const p=pt(i,11.45);
+    let anch="middle"; if(p[0]>cx+8)anch="start"; else if(p[0]<cx-8)anch="end";
+    const words=lab.split(" – ");
+    s+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+3).toFixed(1)+'" font-size="8.5" font-weight="700" fill="'+C.ink+'" text-anchor="'+anch+'">'+
+       (words.length>1?'<tspan x="'+p[0].toFixed(1)+'" dy="-4">'+esc(words[0])+'</tspan><tspan x="'+p[0].toFixed(1)+'" dy="10">'+esc(words[1])+'</tspan>':esc(lab))+'</text>';});
+  el.innerHTML=svg(W,H,s);
+}
+
+/* Graf 4: vodorovné stĺpce – pohybové vzory */
+function patternChart(el){
+  const W=400,rowH=26,padL=124,padR=32,padT=6,H=padT+PAT.length*rowH+6,plotW=W-padL-padR;
+  let s="";
+  PAT.forEach((r,i)=>{const y=padT+i*rowH;
+    s+='<text x="'+(padL-6)+'" y="'+(y+13)+'" font-size="8.5" font-weight="600" fill="'+C.ink+'" text-anchor="end">'+esc(r[0])+'</text>';
+    s+='<rect x="'+padL+'" y="'+(y+2)+'" width="'+plotW+'" height="18" fill="#eef0f2" rx="2"/>';
+    s+='<rect x="'+padL+'" y="'+(y+2)+'" width="'+(plotW*r[2]/100).toFixed(1)+'" height="18" fill="'+C.p25+'" rx="2" opacity=".9"/>';
+    s+='<rect x="'+padL+'" y="'+(y+2)+'" width="'+(plotW*r[1]/100).toFixed(1)+'" height="18" fill="'+C.p05+'" rx="2"/>';
+    const inside=r[1]>=12;
+    s+='<text x="'+(padL+plotW*r[1]/100+(inside?-4:4)).toFixed(1)+'" y="'+(y+15)+'" font-size="8" font-family="monospace" font-weight="700" fill="'+(inside?"#fff":C.ink2)+'" text-anchor="'+(inside?"end":"start")+'">'+r[1]+'%</text>';
+    s+='<text x="'+(W-padR+4)+'" y="'+(y+15)+'" font-size="8" font-family="monospace" fill="'+C.p25+'" font-weight="700">'+r[2]+'%</text>';});
+  el.innerHTML=svg(W,H,s);
+}
+
+/* Graf 3: heatmapa */
+function heatmap(el){
+  let h='<table class="hm"><thead><tr><th class="rowh">Cvik</th>';
+  HM_COLS.forEach(c=>h+='<th>'+esc(c)+'</th>');
+  h+='</tr></thead><tbody>';
+  HM.forEach(r=>{h+='<tr><td class="rowh">'+esc(r[0])+'</td>';
+    r[1].forEach(v=>{const cl=v===2?"h2c":v===1?"h1c":"h0c";h+='<td><i class="'+cl+'">'+(v===2?"■":v===1?"▪":"")+'</i></td>';});
+    h+='</tr>';});
+  el.innerHTML=h+'</tbody></table>';
+}
+
+/* Graf 5: pomery */
+function ratioChart(el){
+  const W=400,blockH=74,H=RATIOS.length*blockH+6,padL=8,padR=8,plotW=W-padL-padR;
+  let s="";
+  RATIOS.forEach((r,i)=>{const y0=i*blockH+16;
+    s+='<text x="'+padL+'" y="'+(y0-4)+'" font-size="10" font-weight="700" fill="'+C.ink+'">'+esc(r.t)+'</text>';
+    [["teraz",r.now,y0+2,C.p05],["po zmene",r.opt,y0+28,C.p25]].forEach(b=>{
+      const wA=plotW*b[1]/100;
+      s+='<rect x="'+padL+'" y="'+b[2]+'" width="'+wA.toFixed(1)+'" height="18" fill="'+b[3]+'" rx="2"/>';
+      s+='<rect x="'+(padL+wA).toFixed(1)+'" y="'+b[2]+'" width="'+(plotW-wA).toFixed(1)+'" height="18" fill="#d9dee3" rx="2"/>';
+      s+='<text x="'+(padL+4)+'" y="'+(b[2]+13)+'" font-size="8" font-family="monospace" font-weight="700" fill="#fff">'+esc(r.a)+' '+Math.round(b[1])+'%</text>';
+      s+='<text x="'+(W-padR-4)+'" y="'+(b[2]+13)+'" font-size="8" font-family="monospace" font-weight="700" fill="'+C.ink+'" text-anchor="end">'+esc(r.b)+' '+Math.round(100-b[1])+'%</text>';
+      s+='<text x="'+(padL-6)+'" y="'+(b[2]+13)+'" font-size="7" fill="'+C.ink3+'" text-anchor="end">'+b[0]+'</text>';});
+    const xi=padL+plotW*r.ideal/100;
+    s+='<line x1="'+xi.toFixed(1)+'" y1="'+(y0-1)+'" x2="'+xi.toFixed(1)+'" y2="'+(y0+49)+'" stroke="'+C.ink+'" stroke-width="1.6" stroke-dasharray="3 2"/>';
+    s+='<text x="'+xi.toFixed(1)+'" y="'+(y0+58)+'" font-size="7" font-family="monospace" fill="'+C.ink+'" text-anchor="middle">ideál '+r.ideal+'/'+(100-r.ideal)+'</text>';});
+  el.innerHTML=svg(W,H,s);
+}
+
+/* Tabuľka objemu */
+function volTable(){
+  const st=(v,mn,mx)=>v<mn?['t-no','pod rozsahom']:v>mx?['t-part','nad rozsahom']:['t-ok','v rozsahu'];
+  $("#voltable").innerHTML=VOL.map(r=>{const s=st(r[3],r[4],r[5]);
+    return '<tr><td><strong>'+esc(r[0])+'</strong></td><td class="n">'+fx(r[1])+'</td><td class="n">'+fx(r[2])+'</td><td class="n"><strong>'+fx(r[3])+'</strong></td><td class="n">'+fx(r[3]*0.75)+'</td><td class="n">'+r[4]+'–'+r[5]+'</td><td><span class="tag '+s[0]+'">'+s[1]+'</span></td></tr>';}).join("");
+}
+
+/* Tier list */
+function tierBoard(){
+  const tiers=["S","A","B","C","D"];
+  $("#tierboard").innerHTML=tiers.map(t=>{
+    const items=EX.filter(e=>e[2]===t);
+    return '<div class="trow"><div class="tlabel t'+t+'">'+t+'</div><div class="titems">'+
+      (items.length?items.map(e=>'<span class="chip'+(e[5]==="new"?" new":e[5]==="cut"?" cut":"")+'">'+esc(e[0])+'<span class="mg">'+esc(e[1])+'</span></span>').join(""):'<span class="small" style="color:var(--ink3);padding:4px">Žiadny cvik v tejto kategórii — a to je dobrá správa.</span>')+
+      '</div></div>';}).join("");
+  const row=e=>'<tr><td><strong>'+esc(e[0])+'</strong>'+(e[5]==="new"?' <span class="badge b-new">Nové</span>':e[5]==="cut"?' <span class="badge b-cut">Von</span>':'')+'</td><td class="small">'+esc(e[1])+'</td><td class="n"><span class="tiercell t'+e[2]+'">'+e[2]+'</span></td><td>'+e[3]+'</td><td>'+e[4]+'</td></tr>';
+  $("#tiertable-current").innerHTML=EX.filter(e=>e[5]!=="new").map(row).join("");
+  $("#tiertable-new").innerHTML=EX.filter(e=>e[5]==="new").map(row).join("");
+}
+
+/* Karty tréningových dní */
+const CHG={new:['b-new','Nové'],keep:['b-keep','Ostáva'],move:['b-move','Presunuté'],mod:['b-mod','Upravené'],cut:['b-cut','Von']};
+function dayCards(list,target){
+  $(target).innerHTML=list.map(d=>
+    '<div class="card"><h3 style="margin-bottom:4px">'+d.n+' — '+esc(d.t)+'</h3>'+
+    '<p class="acclabel" style="margin-bottom:12px">'+d.mins+'</p><div class="tscroll"><table>'+
+    '<thead><tr><th>Cvik</th><th class="n">Série</th><th class="n">Opak.</th><th class="n">RIR</th><th class="n">Pauza</th><th>Poznámka k technike</th><th>Zmena</th></tr></thead><tbody>'+
+    d.rows.map(r=>'<tr><td><strong>'+r[0]+'</strong></td><td class="n">'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+r[3]+'</td><td class="n">'+r[4]+'</td><td class="small">'+r[5]+'</td><td><span class="badge '+CHG[r[6]][0]+'">'+CHG[r[6]][1]+'</span></td></tr>').join("")+
+    '</tbody></table></div></div>').join("");
+}
+
+/* Náhrady */
+function subsTable(){
+  $("#substable").innerHTML=SUBS.map(r=>'<tr><td><strong>'+esc(r[0])+'</strong></td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td class="small">'+esc(r[3])+'</td></tr>').join("");
+}
+
+/* Technika */
+function techSections(){
+  $("#techsections").innerHTML=TECH.map(g=>
+    '<details class="acc"><summary>'+esc(g.d)+' <span class="acclabel">'+g.ex.length+' cvikov</span></summary><div class="accbody">'+
+    g.ex.map(e=>'<div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line2)">'+
+      '<h4 style="margin-bottom:8px;font-size:16px">'+esc(e.n)+'</h4>'+
+      '<p class="acclabel" style="margin-bottom:4px">Kľúčové body</p><ul style="margin:0 0 10px;padding-left:18px;font-size:14px">'+e.k.map(x=>'<li>'+x+'</li>').join("")+'</ul>'+
+      '<p class="acclabel" style="margin-bottom:4px;color:var(--p25)">Najčastejšia chyba samoukov</p><p style="font-size:14px;margin-bottom:10px">'+e.m+'</p>'+
+      '<p class="acclabel" style="margin-bottom:4px;color:var(--p10)">Ako si overíš, či to cítiš správne</p><p style="font-size:14px;margin:0">'+e.c+'</p></div>').join("")+
+    '</div></details>').join("");
+}
+
+/* Longevity dashboard */
+function longDash(){
+  const L={ok:["t-ok","pokryté"],part:["t-part","čiastočne"],no:["t-no","chýba"]};
+  $("#longdash").innerHTML=LONG.map(c=>
+    '<div class="lcard '+c.s+'"><span class="st tag '+L[c.s][0]+'">'+L[c.s][1]+'</span><h4>'+esc(c.t)+'</h4>'+
+    '<div class="meter"><i style="width:'+c.p+'%;background:'+(c.s==="ok"?C.p10:c.s==="part"?C.p15:C.p25)+'"></i></div>'+
+    '<p class="small" style="margin-bottom:8px">'+c.now+'</p>'+
+    '<p class="small" style="margin:0"><strong>Čo s tým:</strong> '+esc(c.do)+'</p></div>').join("");
+}
+
+/* Ťaháky */
+function sheets(){
+  $("#sheets").innerHTML=DAYS.map(d=>
+    '<div class="sheet"><h3>'+d.n+' — '+esc(d.t)+'<span>'+d.mins+'</span></h3><table>'+
+    '<thead><tr><th style="width:38%">Cvik</th><th class="n">Série × opak.</th><th class="n">Váha</th><th class="n">Skutočne</th></tr></thead><tbody>'+
+    d.rows.map(r=>'<tr><td><strong>'+r[0].replace(/<span class='small'>.*?<\/span>/,"").replace(/<em>|<\/em>/g,"")+'</strong></td><td class="n">'+r[1]+' × '+r[2]+'</td><td class="n"><span class="blank"></span></td><td class="n"><span class="blank"></span></td></tr>').join("")+
+    '</tbody></table><p class="small" style="margin:10px 0 0;color:var(--ink2)">Rozcvička 5 min + rozohrievacie série 50 % × 8 → 70 % × 5 → 85 % × 3 na prvý cvik. Progresia: keď dáš horný okraj rozsahu vo všetkých sériách, pridaj váhu.</p></div>').join("");
+}
+
+/* Navigácia + odhaľovanie */
+function initNav(){
+  const links=[...document.querySelectorAll("#nav a")];
+  const secs=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+    links.forEach(l=>l.classList.toggle("on",l.getAttribute("href")==="#"+e.target.id));
+    const on=document.querySelector("#nav a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});}});},
+    {rootMargin:"-15% 0px -70% 0px"});
+  secs.forEach(s=>io.observe(s));
+}
+function initReveal(){
+  const els=[...document.querySelectorAll("section > .card, section > details, .sechead")];
+  els.forEach(e=>e.classList.add("reveal"));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{rootMargin:"0px 0px -8% 0px"});
+  els.forEach(e=>io.observe(e));
+}
+
+/* Štart */
+document.addEventListener("DOMContentLoaded",()=>{
+  volumeChart($("#chart-volume"),false);
+  volumeChart($("#chart-after"),true);
+  radarChart($("#chart-radar"));
+  patternChart($("#chart-patterns"));
+  heatmap($("#chart-heat"));
+  ratioChart($("#chart-ratios"));
+  volTable(); tierBoard(); subsTable(); techSections(); longDash(); sheets();
+  dayCards(DAYS,"#daycards"); dayCards(DAYS3,"#daycards3");
+  initNav(); initReveal();
+  window.addEventListener("beforeprint",()=>document.querySelectorAll("details.acc").forEach(d=>{d.dataset.was=d.open?"1":"0";d.open=true;}));
+  window.addEventListener("afterprint",()=>document.querySelectorAll("details.acc").forEach(d=>{if(d.dataset.was==="0")d.open=false;}));
+});
+</script>
+</body>
+</html>
