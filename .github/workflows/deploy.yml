@@ -24,7 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # enablement: true zapne Pages priamo z workflowu, nech sa nemusí klikať v nastaveniach
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       # Statická stránka bez buildu — len sa vyberie to, čo sa má publikovať.
       - name: Poskladať _site
