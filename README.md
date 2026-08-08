@@ -67,7 +67,13 @@ Potom otvor `http://localhost:8000`.
 Push do `main` spustí [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml),
 ktorý poskladá `_site` a nasadí ho na GitHub Pages.
 
-Jednorazovo treba v repozitári zapnúť **Settings → Pages → Source: GitHub Actions**.
+**Jednorazovo treba zapnúť Pages ručne:** Settings → Pages → Source: **GitHub Actions**.
+Kým sa to nespraví, workflow padá hneď na kroku `configure-pages`. Zapnúť Pages priamo
+z workflowu cez `enablement: true` nejde — `GITHUB_TOKEN` na to nemá právo a krok skončí
+na 403. Po zapnutí stačí v Actions dať **Re-run jobs** na poslednom behu.
+
+Alternatíva bez Actions: Settings → Pages → Source: **Deploy from a branch → `main` / `(root)`**.
+V koreni je `index.html`, `assets/` aj `.nojekyll`, takže to funguje rovnako.
 
 ## Tlač
 
